@@ -1,6 +1,6 @@
-"""AIBrain Core
+""" AIBrain Core
 
-    This file defines an application core to handle the subsystems and desired pipelines.
+    This file defines an application's core to handle the tasks.
 """
 
 

@@ -1,12 +1,12 @@
-"""2D Frame
+""" 2D Frame
 
-This python file contains the 2D Frame class object.
+    This python file contains the 2D Frame class object.
 """
 
 
 # region Imported Dependencies
 import uuid
-from brain.inp.img.img2d import Image2D
+from brain.cv.inp.img.img2d import Image2D
 # endregion Imported Dependencies
 
 

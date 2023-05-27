@@ -1,6 +1,6 @@
-"""Base Task
+""" Base Task
 
-    This file defines an abstract base tsk.
+    This file defines an abstract base brain task.
 """
 
 

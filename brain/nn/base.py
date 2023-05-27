@@ -1,6 +1,6 @@
-"""Base Neural Network Model
+""" Base Neural Network Model
 
-    This file defines a base machine learning model.
+    This file defines a base neural network model.
 """
 
 

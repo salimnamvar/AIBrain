@@ -1,4 +1,4 @@
-"""Base Machine Learning Model
+""" Base Machine Learning Model
 
     This file defines a base machine learning model.
 """
