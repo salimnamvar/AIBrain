@@ -1,6 +1,6 @@
-"""2D Image
+""" 2D Image
 
-This python file contains the 2D image class object.
+    This python file contains the 2D image class object.
 """
 
 

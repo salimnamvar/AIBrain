@@ -1,22 +1,24 @@
-"""2D Frame List
+""" 2D Video List
 
-This python file contains the 2D Frame List class object.
+    This python file contains the 2D Video List class object.
 """
 
 
 # region Imported Dependencies
-from typing import List, Union
-from brain.inp.vid.frm2d import Frame2D
+import uuid
+from typing import List, Tuple, Union
+from brain.cv.inp.vid.frm2d_list import Frame2DList
+from brain.cv.inp.vid.vid2d import Video2D
 # endregion Imported Dependencies
 
 
-class Frame2DList:
-    def __init__(self, a_items: Union[List['Frame2DList'], List[Frame2D], 'Frame2DList', Frame2D] = None) -> None:
+class Video2DList:
+    def __init__(self, a_items: Union[List['Video2DList'], List[Video2D], 'Video2DList', Video2D] = None) -> None:
         # If the `a_items` is not empty
         if a_items is not None:
-            if isinstance(a_items, (list, tuple, Frame2D, self.__class__)):
+            if isinstance(a_items, (list, tuple, Video2D, self.__class__)):
                 # If `a_items` is a a_items_type object
-                if isinstance(a_items, Frame2D):
+                if isinstance(a_items, Video2D):
                     self._items = [a_items]
 
                 # If the `a_items` is a self.__class__ object
@@ -27,7 +29,7 @@ class Frame2DList:
                 elif isinstance(a_items, (list, tuple)):
 
                     # If all the items in the list-tuple are a_items_type objects
-                    if all(isinstance(x, Frame2D) for x in a_items):
+                    if all(isinstance(x, Video2D) for x in a_items):
                         self._items = [item for item in a_items]
 
                     # If all the items in the list-tuple are self.__class__ objects
@@ -38,28 +40,43 @@ class Frame2DList:
 
                     else:
                         raise TypeError("The element of a_items is of invalid type. They must be all,"
-                                        + Frame2D.__name__ + " or " + self.__class__.__name__ + ")")
+                                        + Video2D.__name__ + " or " + self.__class__.__name__ + ")")
             else:
-                raise TypeError('The `a_items` should be a list or tuple of [' + Frame2D.__name__ + "," +
+                raise TypeError('The `a_items` should be a list or tuple of [' + Video2D.__name__ + "," +
                                 self.__class__.__name__ + '] objects')
 
         # If the list is empty, initialize the list
         elif a_items is None or len(a_items) == 0:
             self._items = []
         else:
-            raise TypeError('The `a_items` should be a list or tuple of [' + Frame2D.__name__ + "," +
+            raise TypeError('The `a_items` should be a list or tuple of [' + Video2D.__name__ + "," +
                             self.__class__.__name__ + '] objects')
 
-    def append(self, a_item: Frame2D) -> None:
+    def append(self, a_item: Video2D) -> None:
         self._items.append(a_item)
 
     @property
-    def items(self) -> List[Frame2D]:
+    def items(self) -> List[Video2D]:
         return self._items
 
-    def __getitem__(self, a_index: int) -> Frame2D:
+    def __getitem__(self, a_index: int) -> Video2D:
         return self._items[a_index]
 
     def __len__(self) -> int:
         return len(self._items)
 
+    def read(self) -> Tuple[bool, Frame2DList]:
+        if len(self._items) == 0:
+            raise IndexError('The Video2DList is empty.')
+
+        frames: Frame2DList = Frame2DList()
+        frames_ret = False
+        for vid in self._items:
+            ret, frame = vid.read()
+            if ret:
+                frames.append(frame)
+                frames_ret = True
+        return frames_ret, frames
+
+    def get_ids(self) -> List[uuid.UUID]:
+        return [item.id for item in self._items]

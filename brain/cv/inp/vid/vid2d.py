@@ -1,6 +1,6 @@
-"""2D Video
+""" 2D Video
 
-This python file contains the 2D Video class object.
+    This python file contains the 2D Video class object.
 """
 
 
@@ -8,7 +8,7 @@ This python file contains the 2D Video class object.
 import uuid
 from copy import deepcopy
 import cv2
-from brain.inp.vid.frm2d import Frame2D
+from brain.cv.inp.vid.frm2d import Frame2D
 # endregion Imported Dependencies
 
 
