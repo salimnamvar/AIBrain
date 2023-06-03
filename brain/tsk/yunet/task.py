@@ -1,6 +1,6 @@
-""" Yolo Object Detection Research Task
+""" YuNet Object Detection Research Task
 
-    This task is research in YOLO object detection architecture.
+    This task is research in YuNet object detection architecture.
 """
 
 
