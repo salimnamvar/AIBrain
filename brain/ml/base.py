@@ -10,7 +10,7 @@ from brain.cfg.param import Config
 # endregion Imported Dependencies
 
 
-class BaseModel(ABC):
+class BaseMLModel(ABC):
     def __init__(self, *args, **kwargs):
         self.cfg: Config = Config.get_instance()
 
