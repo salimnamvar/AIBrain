@@ -6,6 +6,7 @@
 
 # region Imported Dependencies
 from jproperties import Properties
+from brain.cfg.yunet_param import YuNetConfig
 # endregion Imported Dependencies
 
 
@@ -22,6 +23,15 @@ class TaskConfig:
         self.method: str = a_cfg.properties.get('tsk.method')
         if not self.method.lower() in ['train', 'test', 'inference']:
             raise ValueError('Invalid `tsk.method` is entered.')
+
+
+class NNConfig:
+    def __init__(self, a_cfg: Properties) -> None:
+        self.type: str = a_cfg.properties.get('nn.model.type')
+        if self.type == 'YuNet':
+            self.model: YuNetConfig = YuNetConfig(a_cfg=a_cfg)
+        else:
+            self.model: YuNetConfig = None
 # endregion Sub Configuration Data Classes
 
 
@@ -42,6 +52,7 @@ class Config:
             # Sub Configurations
             self.common: ExperimentConfig = ExperimentConfig(a_cfg=cfg)
             self.task: TaskConfig = TaskConfig(a_cfg=cfg)
+            self.nn: NNConfig = NNConfig(a_cfg=cfg)
             Config.__instance = self
 
     @staticmethod

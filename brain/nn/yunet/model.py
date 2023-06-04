@@ -10,7 +10,7 @@ from brain.nn.base import BaseNNModel
 # endregion Imported Dependencies
 
 
-class BaseModel(BaseNNModel):
+class YuNet(BaseNNModel):
     def __init__(self):
         self.cfg: Config = Config.get_instance()
 

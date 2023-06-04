@@ -19,11 +19,12 @@ class YuNetBackbone(nn.Module):
         self.stage_channels: List[List[int]] = a_stage_channels
         self.downsample_idx: List[int] = a_downsample_idx
         self.out_idx: List[int] = a_out_idx
+        self.num_layers: int = len(a_stage_channels)
         # endregion Inputs
 
         # Initialize Architecture
         self.model0: ConvHead = ConvHead(*self.stage_channels[0])
-        for i in range(1, len(self.stage_channels)):
+        for i in range(1, self.num_layers):
             self.add_module(f'model{i}', Conv4LayerBlock(*self.stage_channels[i]))
 
         # Initialize
@@ -43,7 +44,7 @@ class YuNetBackbone(nn.Module):
 
     def forward(self, x) -> List[Tensor]:
         out: List[Tensor] = []
-        for i in range(len(self.stage_channels)):
+        for i in range(self.num_layers):
             x = self.__getattr__(f'model{i}')(x)
             if i in self.out_idx:
                 out.append(x)
