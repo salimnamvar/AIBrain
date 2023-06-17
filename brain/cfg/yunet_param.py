@@ -25,6 +25,29 @@ class NeckConfig:
         self.out_idx: List[int] = eval(a_cfg.properties.get('nn.model.neck.out_idx'))
 
 
+class PriorGeneratorConfig:
+    def __init__(self, a_cfg: Properties) -> None:
+        self.type: str = a_cfg.properties.get('nn.model.head.prior_generator.type')
+        self.offset: int = int(a_cfg.properties.get('nn.model.head.prior_generator.offset'))
+        self.strides: List[int] = a_cfg.properties.get('nn.model.head.prior_generator.strides')
+
+
+class ClassificationLossConfig:
+    def __init__(self, a_cfg: Properties) -> None:
+        NotImplemented
+
+
+class HeadConfig:
+    def __init__(self, a_cfg: Properties) -> None:
+        self.type: str = a_cfg.properties.get('nn.model.head.type')
+        self.num_classes: int = int(a_cfg.properties.get('nn.model.head.num_classes'))
+        self.in_channels: int = int(a_cfg.properties.get('nn.model.head.in_channels'))
+        self.shared_stacked_convs: int = int(a_cfg.properties.get('nn.model.head.shared_stacked_convs'))
+        self.stacked_convs: int = int(a_cfg.properties.get('nn.model.head.stacked_convs'))
+        self.feat_channels: int = int(a_cfg.properties.get('nn.model.head.feat_channels'))
+        self.prior_generator: PriorGeneratorConfig = PriorGeneratorConfig(a_cfg=a_cfg)
+
+
 class YuNetConfig:
     def __init__(self, a_cfg: Properties) -> None:
         self.backbone: BackboneConfig = BackboneConfig(a_cfg=a_cfg)
