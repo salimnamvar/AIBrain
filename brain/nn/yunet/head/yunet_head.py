@@ -20,7 +20,7 @@ class YuNetHead(nn.Module):
                  a_kps_loss_type: str = 'SmoothL1Loss', a_kps_loss_beta: float = 0.1111111111111111,
                  a_kps_loss_loss_weight: float = 0.1, a_obj_loss_type: str = 'CrossEntropyLoss',
                  a_obj_loss_use_sigmoid: bool = True, a_obj_loss_reduction: str = 'sum',
-                 a_obj_loss_loss_weight: float = 1.0):
+                 a_obj_loss_loss_weight: float = 1.0) -> None:
         super(YuNetHead, self).__init__()
         self.num_classes: int = a_num_classes
         self.in_channels: int = a_in_channels
