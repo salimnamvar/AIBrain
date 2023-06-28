@@ -1,6 +1,7 @@
 """ YuNet Object Detector Neural Network Model
 
     This file defines a YuNet object detector neural network model.
+    The code is used from https://github.com/ShiqiYu/libfacedetection.train.
 """
 
 
