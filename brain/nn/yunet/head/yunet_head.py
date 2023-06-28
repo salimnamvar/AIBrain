@@ -15,12 +15,13 @@ class YuNetHead(nn.Module):
                  a_prior_generator_type: str = 'MlvlPointGenerator', a_prior_generator_offset: int = 0,
                  a_prior_generator_strides: List[int] = [8, 16, 32], a_cls_loss_type: str = 'CrossEntropyLoss',
                  a_cls_loss_use_sigmoid: bool = True, a_cls_loss_reduction: str = 'sum',
-                 a_cls_loss_loss_weight: float = 1.0,  a_bbox_loss_type: str = 'EIoULoss',
+                 a_cls_loss_loss_weight: float = 1.0, a_bbox_loss_type: str = 'EIoULoss',
                  a_bbox_loss_loss_weight: float = 5.0, a_bbox_loss_reduction: str = 'sum',
                  a_kps_loss_type: str = 'SmoothL1Loss', a_kps_loss_beta: float = 0.1111111111111111,
                  a_kps_loss_loss_weight: float = 0.1, a_obj_loss_type: str = 'CrossEntropyLoss',
                  a_obj_loss_use_sigmoid: bool = True, a_obj_loss_reduction: str = 'sum',
                  a_obj_loss_loss_weight: float = 1.0):
+        super(YuNetHead, self).__init__()
         self.num_classes: int = a_num_classes
         self.in_channels: int = a_in_channels
         self.shared_stacked_convs: int = a_shared_stacked_convs
