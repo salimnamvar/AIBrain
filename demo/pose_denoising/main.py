@@ -1,4 +1,4 @@
-"""Kalman Filter Denoising Experiment
+"""Pose Denoising
 
 Using Pose Estimator to estimate the body skeleton and Kalman Filter to denoise the key-points.
 """
@@ -11,8 +11,8 @@ from brain.utils.cv.shape.ps import Pose2D
 from brain.utils.cv.vid import Frame2D
 from brain.utils.ml.pos.MNetSPTv4 import MNetSPTv4
 from brain.utils.ml.seg import OVIS, SegBBox2DList
-from examples.pose_denoising.trk import Tracker, State
-from examples.pose_denoising.vis import visualize
+from demo.pose_denoising.trk import Tracker, State
+from demo.pose_denoising.vis import visualize
 # endregion Imported Dependencies
 
 
