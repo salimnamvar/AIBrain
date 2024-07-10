@@ -56,10 +56,13 @@ if __name__ == "__main__":
                     a_conf_thre=0.0,
                     a_num_kps=17,
                 )
+                trk_pose = trk.state()
             else:
                 trk.update(a_state=State(boxes[0], pose))
+                trk_pose = trk.state()
         else:
             pose = None
+
         trk_pose = trk.predict()
         visualize(
             a_frame=frame,
