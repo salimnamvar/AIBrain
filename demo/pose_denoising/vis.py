@@ -22,7 +22,7 @@ def visualize(
             img=a_frame.data,
             pt1=a_box.p1.to_tuple(),
             pt2=a_box.p2.to_tuple(),
-            color=(0, 0, 255),
+            color=(255, 180, 90),
             thickness=2,
             lineType=cv2.LINE_8,
         )
