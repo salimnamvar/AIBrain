@@ -53,34 +53,88 @@ class Tracker:
     def _init_kf(self, a_state: State):
         # Initialize the state transition matrix
         F = np.eye(self.num_kps * self.dim_state)
+        #F2 = np.eye(self.num_kps * self.dim_state)
         for i in range(self.num_kps):
             idx = 4 * i
             F[idx : idx + 2, idx + 2 : idx + 4] = np.eye(2)  # position to velocity
+
+        #    F2[i * 4, i * 4 + 2] = 1  # x
+        #    F2[i * 4 + 1, i * 4 + 3] = 1  # y
+
         self.kf.F = F
 
         # Define the measurement matrix
         H = np.zeros((2 * self.num_kps, self.num_kps * self.dim_state))
+        #H2 = np.zeros((2 * self.num_kps, self.num_kps * self.dim_state))
         for i in range(self.num_kps):
             idx = 4 * i
             H[2 * i : 2 * i + 2, idx : idx + 2] = np.eye(2)  # x, y positions
+
+        #    H2[i * 2, i * 4] = 1  # x
+        #    H2[i * 2 + 1, i * 4 + 1] = 1  # y
         self.kf.H = H
 
         # Set up the process noise covariance matrix
-        transition_covariance_noise = 0.001
-        Q = np.eye(self.num_kps * self.dim_state) * transition_covariance_noise
+        process_noise = 0.001
+        Q = np.eye(self.num_kps * self.dim_state) * process_noise
+        #Q2 = np.eye(self.num_kps * self.dim_state) * process_noise
+        #for i in range(self.num_kps):
+        #    Q2[i * 4, i * 4] = process_noise  # Variance for x position
+        #    Q2[i * 4 + 1, i * 4 + 1] = process_noise  # Variance for y position
+        #    Q2[i * 4 + 2, i * 4 + 2] = process_noise  # Variance for x velocity
+        #    Q2[i * 4 + 3, i * 4 + 3] = process_noise  # Variance for y velocity
         self.kf.Q = Q
 
         # Set up the measurement noise covariance matrix
-        observation_covariance_noise = 10
-        R = np.eye(2 * self.num_kps) * observation_covariance_noise
+        measurement_noise = 10
+        R = np.eye(2 * self.num_kps) * measurement_noise
+        #R2 = np.eye(2 * self.num_kps) * measurement_noise
+        #for i in range(self.num_kps):
+        #    R2[i * 2, i * 2] = measurement_noise  # Variance for x position measurement
+        #    R2[i * 2 + 1, i * 2 + 1] = measurement_noise  # Variance for y position measurement
         self.kf.R = R
 
-        # Initialize the state vector and covariance matrix
-        initial_state = np.zeros(self.num_kps * self.dim_state)
-        initial_covariance = np.eye(self.num_kps * self.dim_state)
-        self.kf.x = initial_state
-        self.kf.x[: self.num_kps * self.dim_measure] = self._state_to_z(a_state=a_state)
-        self.kf.P = initial_covariance
+        # Covariance matrix
+        initial_uncertainty = 100
+        P = np.eye(self.num_kps * self.dim_state)
+
+        #P2 = np.eye(self.num_kps * self.dim_state) * initial_uncertainty
+        #for i in range(self.num_kps):
+        #    P2[i * 4, i * 4] = initial_uncertainty  # Variance for x position
+        #    P2[i * 4 + 1, i * 4 + 1] = initial_uncertainty  # Variance for y position
+        #    P2[i * 4 + 2, i * 4 + 2] = initial_uncertainty  # Variance for x velocity
+        #    P2[i * 4 + 3, i * 4 + 3] = initial_uncertainty  # Variance for y velocity
+        self.kf.P = P
+
+        # Measurement
+        #initial_state = np.zeros(self.num_kps * self.dim_state)
+        #self.kf.x = initial_state
+        #self.kf.x[: self.num_kps * self.dim_measure] = self._state_to_z(a_state=a_state)
+
+        measurement = a_state.pose.to_xy().flatten()
+        reshaped_array = np.zeros(2 * self.num_kps * 2)
+
+        for i in range(self.num_kps):
+            x = measurement[2 * i]
+            y = measurement[2 * i + 1]
+            reshaped_array[4 * i] = x
+            reshaped_array[4 * i + 1] = y
+
+            # Assuming initial velocities are zero; you may update with actual velocities if available
+            reshaped_array[4 * i + 2] = 0.0  # x' velocity
+            reshaped_array[4 * i + 3] = 0.0  # y' velocity
+
+        #initial_x_positions = [0.0] * self.num_kps  # Replace with actual initial positions if known
+        #initial_y_positions = [0.0] * self.num_kps  # Replace with actual initial positions if known
+        #initial_x_velocities = [0.0] * self.num_kps  # Replace with actual initial velocities if known
+        #initial_y_velocities = [0.0] * self.num_kps  # Replace with actual initial velocities if known
+
+        #initial_state = []
+        #for i in range(self.num_kps):
+        #    initial_state.extend([initial_x_positions[i], initial_y_positions[i],
+        #                          initial_x_velocities[i], initial_y_velocities[i]])
+
+        self.kf.x = reshaped_array#np.array(initial_state).reshape(-1, 1)
 
     def _state_to_z(self, a_state: State):
         return a_state.pose.to_xy().flatten()
@@ -108,4 +162,7 @@ class Tracker:
 
     def predict(self):
         self.kf.predict()
+        return self._x_to_state()
+
+    def state(self):
         return self._x_to_state()
