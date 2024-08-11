@@ -1,0 +1,11 @@
+"""Object Tracker Utility Modules
+
+This module provides subsequent utility modules of object trackers.
+"""
+
+# region Imported Dependencies
+from .bbox import TrackedBBox2D, TrackedBBox2DList, TrackedBBox2DDict
+from .seg_bbox import TrackedSegBBox2D, TrackedSegBBox2DList, TrackedSegBBox2DDict
+from .trk_model import BBoxTrkModel
+
+# endregion Imported Dependencies
