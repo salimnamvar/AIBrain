@@ -27,19 +27,26 @@ class BaseModel(BaseObject, ABC):
 
     Attributes:
         name (str): The name of the model.
-        logger (logging.Logger): The logger instance for the model.
-
+        cfg (BrainConfig, optional): The configuration instance.
+        logger (logging.Logger, optional): The logger instance for the model.
     """
 
-    def __init__(self, a_name: str = "BaseModel"):
+    def __init__(self, a_name: str = "BaseModel", a_use_cfg: bool = False):
         """BaseModel Constructor
 
         Args:
             a_name (str): The name of the model.
+            a_use_cfg (bool): Flag to determine if the model should have a cfg attribute.
         """
         super().__init__(a_name)
-        self.cfg: BrainConfig = BrainConfig.get_instance()
-        self.logger = logging.getLogger(self.cfg.log.name + "." + self.name)
+        self._cfg = None
+        self._logger = None
+
+        if a_use_cfg:
+            self.cfg: BrainConfig = BrainConfig.get_instance()
+            self.logger = logging.getLogger(self.cfg.log.name + "." + self.name)
+        else:
+            self.logger = logging.getLogger(self.name)
 
     # region Attributes
     @property
@@ -168,6 +175,7 @@ class BaseModelList(BaseObjectList[BaseModel], ABC):
         a_name: str = "BaseModelList",
         a_max_size: int = -1,
         a_items: List[BaseModel] = None,
+        a_use_cfg: bool = False
     ):
         """
         Constructor for the `BaseModelList` class.
@@ -179,13 +187,21 @@ class BaseModelList(BaseObjectList[BaseModel], ABC):
                 An :type:`int` representing the maximum size of the list (default is -1, indicating no size limit).
             a_items (List[BaseModel], optional):
                 A list of :class:`BaseModel` objects to initialize the `BaseModelList` (default is None).
+            a_use_cfg (bool): Flag to determine if the model should have a cfg attribute.
 
         Returns:
             None: The constructor does not return any values.
         """
         super().__init__(a_name=a_name, a_max_size=a_max_size, a_items=a_items)
-        self.cfg: BrainConfig = BrainConfig.get_instance()
-        self.logger = logging.getLogger(self.cfg.log.name + "." + self.name)
+
+        self._cfg = None
+        self._logger = None
+
+        if a_use_cfg:
+            self.cfg: BrainConfig = BrainConfig.get_instance()
+            self.logger = logging.getLogger(self.cfg.log.name + "." + self.name)
+        else:
+            self.logger = logging.getLogger(self.name)
 
     # region Attributes
     @property
