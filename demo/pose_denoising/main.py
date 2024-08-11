@@ -17,9 +17,6 @@ from demo.pose_denoising.vis import visualize
 
 
 if __name__ == "__main__":
-    cfg: BrainConfig = BrainConfig.get_instance(
-        a_cfg="cfg.properties"
-    )
     pose_estimator = MNetSPTv4(
         a_name="MNetSPTv4",
         a_mdl_path="saved_model.xml",

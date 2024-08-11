@@ -65,7 +65,7 @@ class BasePipeline(BaseModel, ABC):
         Returns:
             None: The constructor does not return any values.
         """
-        super().__init__(a_name)
+        super().__init__(a_name, a_use_cfg=True)
         self.health_status: HealthStatus = HealthStatus(a_name)
 
     @abstractmethod

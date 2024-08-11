@@ -62,7 +62,7 @@ class BaseJob(BaseModel, ABC):
         Returns:
             None
         """
-        super().__init__(a_name)
+        super().__init__(a_name, a_use_cfg=True)
         self.health_status: HealthStatus = HealthStatus(a_name)
 
     @abstractmethod
