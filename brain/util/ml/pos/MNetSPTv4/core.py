@@ -17,7 +17,7 @@ from brain.util.ml.pos import OVSPosEstModel
 # TODO(doc): Complete the document of following class
 
 
-class MNetSPTv4(OVSPosEstModel):
+class MNetSingPose(OVSPosEstModel):
     def __init__(
         self,
         a_name: str,

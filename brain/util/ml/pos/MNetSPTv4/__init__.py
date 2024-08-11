@@ -4,6 +4,6 @@ This module provides subsequent modules of the MoveNet-Single-Pose-Thunder-v4 Po
 """
 
 # region Imported Dependencies
-from .core import MNetSPTv4
+from .core import MNetSingPose
 
 # endregion Imported Dependencies
