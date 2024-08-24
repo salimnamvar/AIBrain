@@ -9,13 +9,13 @@ import threading
 import time
 from typing import List
 
-from brain.util.obj import BaseObject, BaseObjectList
+from brain.util.obj import ExtBaseObject, BaseObjectList
 
 
 # endregion Imported Dependencies
 
 
-class BaseHealthStatus(BaseObject):
+class BaseHealthStatus(ExtBaseObject):
     """Base Health Status
 
     Represents the base class for health status of a component.

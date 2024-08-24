@@ -7,7 +7,6 @@ Classes:
     Array2DDict (class): Dictionary to store Array2D instances with UUID keys.
 """
 
-
 # region Imported Dependencies
 import uuid
 from typing import List, Union
@@ -15,13 +14,13 @@ from typing import List, Union
 import numpy as np
 
 from brain.util.cv.shape.sz import Size
-from brain.util.obj import BaseObject, BaseObjectDict
+from brain.util.obj import ExtBaseObject, BaseObjectDict
 
 
 # endregion Imported Dependencies
 
 
-class Array2D(BaseObject):
+class Array2D(ExtBaseObject):
     """Array2D Class.
 
     A class representing a 2D array with associated column headings.
@@ -32,9 +31,7 @@ class Array2D(BaseObject):
         data (np.ndarray): A NumPy array containing the data of the 2D array.
     """
 
-    def __init__(
-        self, a_data: np.ndarray, a_headings: List[str], a_name: str = "ARRAY2D"
-    ) -> None:
+    def __init__(self, a_data: np.ndarray, a_headings: List[str], a_name: str = "ARRAY2D") -> None:
         """Constructor for Array2D.
 
         Args:
@@ -80,8 +77,7 @@ class Array2D(BaseObject):
 
         if len(a_headings) != self.cols:
             raise TypeError(
-                f"The number of heading titles in `a_headings` must be the same as number of columns in "
-                f"the array"
+                f"The number of heading titles in `a_headings` must be the same as number of columns in " f"the array"
             )
         self._headings = a_headings
 
@@ -110,13 +106,9 @@ class Array2D(BaseObject):
             ValueError: If `a_data` is not a 2D array.
         """
         if a_data is None or not isinstance(a_data, np.ndarray):
-            raise TypeError(
-                f"`a_data` argument must be an `np.ndarray` but it's type is `{type(a_data)}`"
-            )
+            raise TypeError(f"`a_data` argument must be an `np.ndarray` but it's type is `{type(a_data)}`")
         if a_data.ndim != 2:
-            raise ValueError(
-                f"`a_data` array must be 2D, but it is in shape of `{a_data.shape}`"
-            )
+            raise ValueError(f"`a_data` array must be 2D, but it is in shape of `{a_data.shape}`")
         self._data: np.ndarray = a_data
 
     def to_dict(self) -> dict:

@@ -10,13 +10,14 @@ from typing import Optional
 import numpy as np
 
 from brain.util.cv.shape import Size
-from brain.util.obj import BaseObject
+from brain.util.misc import Time
+from brain.util.obj import ExtBaseObject
 
 
 # endregion Imported Dependencies
 
 
-class Image2D(BaseObject):
+class Image2D(ExtBaseObject):
     """Image2D
 
     A class defining a 2D image in the format [Height, Width, Channels].
@@ -41,6 +42,7 @@ class Image2D(BaseObject):
         a_data: np.ndarray,
         a_filename: Optional[str] = None,
         a_name: str = "IMAGE2D",
+        a_time: Optional[Time] = None,
     ) -> None:
         """
         Constructor for the Image2D class.
@@ -52,13 +54,14 @@ class Image2D(BaseObject):
                 The filename of the image (default is None).
             a_name (str, optional):
                 The name of the Image2D object (default is 'IMAGE2D').
-
+            a_time (Time, optional):
+                The time information related to the image.
         Returns:
             None:
                 The constructor does not return any values.
         """
 
-        super().__init__(a_name=a_name)
+        super().__init__(a_name=a_name, a_time=a_time)
         self.data: np.ndarray = a_data
         self.filename: str = a_filename
 

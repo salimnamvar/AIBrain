@@ -5,14 +5,13 @@ processing units such as subsystems.
 
 """
 
-
 # region Imported Dependencies
-from brain.util.obj import BaseObject
+from brain.util.obj import ExtBaseObject
 
 # endregion Imported Dependencies
 
 
-class BaseOutput(BaseObject):
+class BaseOutput(ExtBaseObject):
     """
     Base class for defining output objects of processing units.
 

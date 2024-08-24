@@ -21,29 +21,40 @@ Functions:
 """
 
 # region Imported Dependencies
+import numpy as np
+import numpy.typing as npt
 import pprint
 from copy import deepcopy
-from typing import TypeVar, Generic, Union, List, Dict, ItemsView
+from typing import TypeVar, Generic, Union, List, Dict, ItemsView, Tuple, Sequence, Optional
+
+from brain.util.misc.type import is_int, is_bool
 
 # endregion Imported Dependencies
 
 
-T_key = TypeVar("T_key")
+TypeKey = TypeVar("TypeKey")
 """
 Type variable for keys in a generic context.
 
 This type variable is used to represent the type of keys in generic classes or functions.
 """
 
-T_value = TypeVar("T_value")
+TypeValue = TypeVar("TypeValue")
 """
 Type variable for values in a generic context.
 
 This type variable is used to represent the type of values in generic classes or functions.
 """
 
+TypeBaseObjectDict = TypeVar("TypeBaseObjectDict", bound="BaseObjectDict")
+"""
+Type variable for `BaseObjectDict` in a generic context.
 
-class BaseObjectDict(Generic[T_key, T_value]):
+This type variable is used to represent the type of `BaseObjectDict` instances in generic classes or functions.
+"""
+
+
+class BaseObjectDict(Generic[TypeKey, TypeValue]):
     """Base Object Dictionary
 
     The `BaseObjectDict` class represents a dictionary of objects with specified key and value types.
@@ -61,8 +72,10 @@ class BaseObjectDict(Generic[T_key, T_value]):
         self,
         a_name: str = "BASE_OBJECT_DICT",
         a_max_size: int = -1,
-        a_key: Union[T_key, List[T_key]] = None,
-        a_value: Union[T_value, List[T_value]] = None,
+        a_key: Optional[Union[TypeKey, List[TypeKey]]] = None,
+        a_value: Optional[Union[TypeValue, List[TypeValue]]] = None,
+        a_key_type: Optional[type] = None,
+        a_value_type: Optional[type] = None,
     ):
         """
         Constructor for the BaseObjectDict class.
@@ -76,7 +89,10 @@ class BaseObjectDict(Generic[T_key, T_value]):
                 The key or list of keys to initialize the BaseObjectDict (default is None).
             a_value (Union[T_value, List[T_value]], optional):
                 The value or list of values to initialize the BaseObjectDict (default is None).
-
+            a_key_type (type, optional):
+                The key data type that specifies the type of keys in the dictionary.
+            a_value_type (type, optional):
+                The value data type that specifies the type of values in the dictionary.
         Returns:
             None: The constructor does not return any values.
 
@@ -85,8 +101,9 @@ class BaseObjectDict(Generic[T_key, T_value]):
         """
         self.name: str = a_name
         self._max_size: int = a_max_size
-        self._items: Dict[T_key, T_value] = {}
-
+        self._items: Dict[TypeKey, TypeValue] = {}
+        self._key_type: type = a_key_type
+        self._value_type: type = a_value_type
         if a_key is not None and a_value is not None:
             self.append(a_key, a_value)
 
@@ -138,7 +155,7 @@ class BaseObjectDict(Generic[T_key, T_value]):
             raise TypeError("The `a_max_size` must be a `int`.")
         self._max_size: int = a_max_size
 
-    def to_dict(self) -> Dict[T_key, T_value]:
+    def to_dict(self) -> Dict[TypeKey, TypeValue]:
         """
         Return a shallow copy of the dictionary.
 
@@ -170,7 +187,7 @@ class BaseObjectDict(Generic[T_key, T_value]):
         """
         return self.to_str()
 
-    def items(self) -> ItemsView[T_key, T_value]:
+    def items(self) -> ItemsView[TypeKey, TypeValue]:
         """
         Return a view object that displays a list of the dictionary's key-value tuple pairs.
 
@@ -179,19 +196,106 @@ class BaseObjectDict(Generic[T_key, T_value]):
         """
         return self._items.items()
 
-    def __getitem__(self, a_key: T_key) -> T_value:
+    def __getitem__(
+        self,
+        a_key: Union[
+            TypeKey,
+            List[TypeKey],
+            Tuple[TypeKey],
+            npt.NDArray[TypeKey],
+            Sequence[TypeKey],
+            int,
+            List[int],
+            Tuple[int],
+            npt.NDArray[np.integer],
+            Sequence[int],
+            slice,
+            List[bool],
+            Tuple[bool],
+            npt.NDArray[bool],
+            Sequence[bool],
+        ],
+    ) -> Union[TypeValue, TypeBaseObjectDict]:
         """
-        Retrieve the value associated with the given key.
+        Retrieve the value(s) associated with the given key(s), indices, or slice.
+
+        This method supports single keys, lists or tuples of keys, numpy arrays of keys,
+        integer indices, boolean sequences, and slicing.
 
         Args:
-            a_key (T_key): The key for which to retrieve the associated value.
+            a_key (Union[TypeKey, List[TypeKey], Tuple[TypeKey], np.ndarray[TypeKey], int,
+            List[int], Tuple[int], np.ndarray[int], slice, List[bool], Tuple[bool], np.ndarray[bool]]):
+                The key, list of keys, tuple of keys, numpy array of keys, integer index,
+                list of integer indices, tuple of integer indices, numpy array of integer indices,
+                slice, list of boolean values, tuple of boolean values, or numpy array of boolean values.
 
         Returns:
-            T_value: The value associated with the provided key.
-        """
-        return self._items[a_key]
+            Union[TypeValue, Dict[TypeKey, TypeValue]]:
+                - If a single key is provided, returns the value associated with that key.
+                - If a list, tuple, or numpy array of keys or indices is provided, returns a dictionary with
+                  key-value pairs corresponding to the provided keys or indices.
+                - If an integer index is provided, returns the value at that index.
+                - If a slice is provided, returns a dictionary with key-value pairs corresponding to the sliced portion.
+                - If a list/tuple/array of booleans is provided, returns a dictionary with key-value pairs
+                  corresponding to the positions where the boolean is True.
 
-    def __setitem__(self, a_key: T_key, a_value: T_value):
+        Raises:
+            TypeError: If `a_key` is not of the supported types (key, list, tuple, numpy array of keys, integer index,
+                       boolean sequence, or slice).
+            IndexError: If an integer index is out of range.
+            ValueError: If the boolean sequence length does not match the length of the dictionary.
+        """
+        if self._key_type != int and isinstance(a_key, (int, np.integer)):
+            # Handle integer
+            keys = list(self._items.keys())
+            if a_key < 0 or a_key >= len(keys):
+                raise IndexError("Integer index is out of range.")
+            key = keys[a_key]
+            return self._items[key]
+
+        elif isinstance(a_key, (list, tuple, np.ndarray)):
+            if self._key_type != int and is_int(a_key):
+                # Handle sequence of integers
+                keys = list(self._items.keys())
+                if any(x < 0 or x >= len(keys) for x in a_key):
+                    raise IndexError("Index is out of range.")
+                return self.__class__(a_key=[keys[i] for i in a_key], a_value=[self._items[keys[i]] for i in a_key])
+
+            elif all(isinstance(x, self._key_type) for x in a_key):
+                # Handle sequence of keys
+                return self.__class__(
+                    a_key=[key for key in a_key if key in self._items],
+                    a_value=[self._items[key] for key in a_key if key in self._items],
+                )
+
+            elif is_bool(a_key):
+                # Handle sequence of booleans
+                if len(a_key) != len(self._items):
+                    raise ValueError("Boolean sequence length must match the length of the dictionary.")
+                keys = []
+                values = []
+                for key, value in zip(self._items.keys(), self._items.values()):
+                    if a_key[list(self._items.keys()).index(key)]:
+                        keys.append(key)
+                        values.append(value)
+                return self.__class__(a_key=keys, a_value=values)
+            else:
+                raise TypeError("All elements in the list, tuple, or numpy array must be either integers or keys.")
+
+        elif isinstance(a_key, slice):
+            # Handle slice
+            keys = list(self._items.keys())
+            sliced_keys = keys[a_key]
+            return self.__class__(a_key=[key for key in sliced_keys], a_value=[self._items[key] for key in sliced_keys])
+
+        else:
+            # Handle key
+            if a_key in self._items:
+                return self._items[a_key]
+            else:
+                raise KeyError(f"Key ({a_key}) not found in the dictionary.")
+
+    def __setitem__(self, a_key: TypeKey, a_value: TypeValue):
         """
         Set the value associated with the given key.
 
@@ -211,8 +315,8 @@ class BaseObjectDict(Generic[T_key, T_value]):
 
     def append(
         self,
-        a_key: Union[T_key, List[T_key]],
-        a_value: Union[T_value, List[T_value]],
+        a_key: Union[TypeKey, List[TypeKey]],
+        a_value: Union[TypeValue, List[TypeValue]],
         a_removal_strategy: str = "first",
     ):
         """
@@ -246,7 +350,7 @@ class BaseObjectDict(Generic[T_key, T_value]):
         else:
             self._append_item(a_key, a_value, a_removal_strategy)
 
-    def _append_item(self, a_key: T_key, a_value: T_value, a_removal_strategy: str = "first") -> None:
+    def _append_item(self, a_key: TypeKey, a_value: TypeValue, a_removal_strategy: str = "first") -> None:
         """
         Append a key-value pair to the BaseObjectDict, handling size constraints.
 
@@ -266,6 +370,12 @@ class BaseObjectDict(Generic[T_key, T_value]):
         Raises:
             ValueError: If an invalid removal strategy is provided.
         """
+        if a_key not in self.keys():
+            self._clip(a_removal_strategy=a_removal_strategy)
+        self._items[a_key] = a_value
+
+    # TODO(doc): Complete the document of following method
+    def _clip(self, a_removal_strategy: str = "first") -> None:
         if self._max_size != -1 and len(self) >= self._max_size:
             if a_removal_strategy.lower() == "first":
                 first_key = next(iter(self._items))
@@ -274,9 +384,8 @@ class BaseObjectDict(Generic[T_key, T_value]):
                 self._items.popitem()
             else:
                 raise ValueError("Invalid removal strategy. Use 'first' or 'last'.")
-        self._items[a_key] = a_value
 
-    def __delitem__(self, a_key: T_key):
+    def __delitem__(self, a_key: TypeKey):
         """
         Remove the key-value pair associated with the given key.
 
@@ -288,7 +397,7 @@ class BaseObjectDict(Generic[T_key, T_value]):
         """
         del self._items[a_key]
 
-    def copy(self) -> "BaseObjectDict[T_key, T_value]":
+    def copy(self: TypeBaseObjectDict) -> TypeBaseObjectDict:
         """
         Create a deep copy of the BaseObjectDict.
 
@@ -319,7 +428,7 @@ class BaseObjectDict(Generic[T_key, T_value]):
         """
         self._items = {}
 
-    def __contains__(self, a_key: T_key):
+    def __contains__(self, a_key: TypeKey):
         """Check if the BaseObjectDict contains the specified key.
 
         Args:
@@ -348,7 +457,7 @@ class BaseObjectDict(Generic[T_key, T_value]):
         """
         return self._items.values()
 
-    def pop(self, a_key: T_key) -> None:
+    def pop(self, a_key: TypeKey) -> None:
         """
         Remove the item with the specified key.
 
@@ -362,9 +471,29 @@ class BaseObjectDict(Generic[T_key, T_value]):
         """
         self._items.pop(a_key)
 
+    # TODO(doc): Complete the document of following method
+    def popitem(self) -> None:
+        if not self._items:
+            raise KeyError("popitem(): dictionary is empty")
+        key = next(reversed(self._items))
+        self._items.pop(key)
+
+    # TODO(doc): Complete the document of following method
+    def pop_first(self) -> None:
+        if not self._items:
+            raise KeyError("pop_first(): dictionary is empty")
+        first_key = next(iter(self._items))
+        self._items.pop(first_key)
+
+    # TODO(doc): Complete the document of following method
+    def pop_last(self) -> None:
+        if not self._items:
+            raise KeyError("pop_last(): dictionary is empty")
+        self.popitem()
+
     def update(
         self,
-        a_dict: Union[Dict[T_key, T_value], ItemsView[T_key, T_value], "BaseObjectDict[T_key, T_value]"],
+        a_dict: Union[Dict[TypeKey, TypeValue], ItemsView[TypeKey, TypeValue], "BaseObjectDict[TypeKey, TypeValue]"],
         a_removal_strategy: str = "first",
     ) -> None:
         """

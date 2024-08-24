@@ -4,17 +4,19 @@ This module defines a `Size` class, which represents the dimensions of an object
 
 """
 
+import math
+
 # region Import Dependencies
 from typing import Union
 
-from brain.util.misc import is_int, is_float
-from brain.util.obj import BaseObject
+from brain.util.misc.type import is_int, is_float
+from brain.util.obj import ExtBaseObject
 
 
 # endregion Import Dependencies
 
 
-class Size(BaseObject):
+class Size(ExtBaseObject):
     """Size Class
 
     The `Size` class represents the dimensions (width and height) of an object.
@@ -272,3 +274,15 @@ class Size(BaseObject):
             int: The area, calculated as width * height.
         """
         return self.width * self.height
+
+    def hypot(self) -> float:
+        """Calculate the diagonal length of the Size.
+
+        This method uses the Pythagorean theorem to compute the diagonal length
+        (or hypotenuse) of a rectangle defined by the width and height.
+
+        Returns:
+            float: The diagonal length of the Size, calculated as
+                   sqrt(width^2 + height^2).
+        """
+        return math.hypot(self.width, self.height)

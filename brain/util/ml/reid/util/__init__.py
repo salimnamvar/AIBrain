@@ -9,9 +9,6 @@ from brain.util.ml.reid.util.model.ov_reid_feat_ext_mdl import OVReidFeatExtMode
 from .entity import (
     ReidDesc,
     ReidDescList,
-    ReidEntityState,
-    ReidEntityStateList,
-    ReidEntityStateDict,
     ReidTarget,
     ReidTargetList,
     ReidTargetNestedList,
@@ -20,6 +17,7 @@ from .entity import (
     ReidEntityList,
     ReidEntityNestedList,
     ReidEntityDict,
+    TypeReidEntity,
 )
 from .model import OVReidFeatExtModel, ReidFeatExtModel, BaseReidModel
 from .assoc import MTE, MTEList, UMTList, UMEList, Associations

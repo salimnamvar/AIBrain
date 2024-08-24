@@ -6,12 +6,12 @@ This module defines the `TargetStatistics` class for handling statistics associa
 
 # region Imported Dependencies
 from typing import Tuple
-from brain.util.obj import BaseObject
+from brain.util.obj import ExtBaseObject
 
 # endregion Imported Dependencies
 
 
-class TargetStatistics(BaseObject):
+class TargetStatistics(ExtBaseObject):
     """Target Statistics
 
         Class for handling statistics associated with a trackable target.
@@ -201,9 +201,7 @@ class TargetStatistics(BaseObject):
         Raises:
             TypeError: If the input velocity is not an instance of `Tuple[float, float]`.
         """
-        if a_velocity is None or not all(
-            [isinstance(val, float) for val in a_velocity]
-        ):
+        if a_velocity is None or not all([isinstance(val, float) for val in a_velocity]):
             raise TypeError("The `a_velocity` must be a `Tuple[float, float]`.")
         self._velocity: Tuple[float, float] = a_velocity
 
@@ -216,14 +214,8 @@ class TargetStatistics(BaseObject):
         Raises:
             TypeError: If the input mode is not a string or not one of 'update' or 'predict'.
         """
-        if (
-            a_mode is None
-            or not isinstance(a_mode, str)
-            and a_mode.lower() not in ["update", "predict"]
-        ):
-            raise TypeError(
-                "The `a_mode` must be a `str` and be `update` or `predict`."
-            )
+        if a_mode is None or not isinstance(a_mode, str) and a_mode.lower() not in ["update", "predict"]:
+            raise TypeError("The `a_mode` must be a `str` and be `update` or `predict`.")
 
         a_mode: str = a_mode.lower()
         if a_mode == "update":

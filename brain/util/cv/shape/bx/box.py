@@ -18,14 +18,14 @@ import numpy as np
 
 from brain.util.cv.shape import Size
 from brain.util.cv.shape.pt import Point2D
-from brain.util.obj import BaseObject, BaseObjectList
+from brain.util.obj import ExtBaseObject, BaseObjectList
 from .fmt import cxyar_to_xyxy
 
 
 # endregion Import Dependencies
 
 
-class Box2D(BaseObject):
+class Box2D(ExtBaseObject):
     """Box-2D
     This module defines a 2D box object, `Box2D`, which represents a rectangular region in a 2D space. The box
     is defined by two corner points, `p1` and `p2`, both represented by instances of the `Point2D` class.
@@ -288,30 +288,20 @@ class Box2D(BaseObject):
             TypeError: If the input coordinates are not of type Tuple, List, or np.ndarray.
             ValueError: If the input coordinates do not have a length of 4 or have more than one dimension.
         """
-        if a_coordinates is None and not isinstance(
-            a_coordinates, (Tuple, List, np.ndarray)
-        ):
-            raise TypeError(
-                "The `a_coordinates` should be a `Tuple, List, or np.ndarray`."
-            )
+        if a_coordinates is None and not isinstance(a_coordinates, (Tuple, List, np.ndarray)):
+            raise TypeError("The `a_coordinates` should be a `Tuple, List, or np.ndarray`.")
 
         if not isinstance(a_coordinates, np.ndarray):
             a_coordinates = np.array(a_coordinates)
 
         if a_coordinates.shape[-1] < 4:
-            raise ValueError(
-                f"`a_coordinates` array should have length 4 but it is in shape of {a_coordinates.shape}."
-            )
+            raise ValueError(f"`a_coordinates` array should have length 4 but it is in shape of {a_coordinates.shape}.")
 
         if a_coordinates.ndim > 1:
-            raise ValueError(
-                f"`a_coordinates` array should be a 1D array but it has {a_coordinates.ndim} dimensions."
-            )
+            raise ValueError(f"`a_coordinates` array should be a 1D array but it has {a_coordinates.ndim} dimensions.")
 
     @classmethod
-    def from_xyxy(
-        cls, a_coordinates: Union[Tuple, List, np.ndarray], **kwargs
-    ) -> "Box2D":
+    def from_xyxy(cls, a_coordinates: Union[Tuple, List, np.ndarray], **kwargs) -> "Box2D":
         """Create a Box2D instance from coordinates in xyxy format.
 
         Args:
@@ -398,14 +388,10 @@ class Box2D(BaseObject):
         Returns:
             np.ndarray: A NumPy array containing the coordinates of both corner points.
         """
-        return np.concatenate(
-            (self.center.to_numpy(), [self.area], [self.aspect_ratio + 1e-6])
-        )
+        return np.concatenate((self.center.to_numpy(), [self.area], [self.aspect_ratio + 1e-6]))
 
     @classmethod
-    def from_cxyar(
-        cls, a_coordinates: Union[Tuple, List, np.ndarray], **kwargs
-    ) -> "Box2D":
+    def from_cxyar(cls, a_coordinates: Union[Tuple, List, np.ndarray], **kwargs) -> "Box2D":
         """Create a Box2D instance from coordinates in (center-x, center-y, area, aspect_ratio) format.
 
         Args:
@@ -544,9 +530,7 @@ class Box2DList(BaseObjectList[Box2D]):
         super().__init__(a_name=a_name, a_max_size=a_max_size, a_items=a_items)
 
     @classmethod
-    def from_xyxy(
-        cls, a_coordinates: Union[Tuple, List, np.ndarray], **kwargs
-    ) -> "Box2DList":
+    def from_xyxy(cls, a_coordinates: Union[Tuple, List, np.ndarray], **kwargs) -> "Box2DList":
         """Create a Box2DList instance from coordinates in xyxy format.
 
         Args:
@@ -563,12 +547,8 @@ class Box2DList(BaseObjectList[Box2D]):
             ValueError: If the input coordinates do not have a length of 4 in the last dimension or have more than one
             dimension.
         """
-        if a_coordinates is None and not isinstance(
-            a_coordinates, (Tuple, List, np.ndarray)
-        ):
-            raise TypeError(
-                "The `a_coordinates` should be a `Tuple, List, or np.ndarray`."
-            )
+        if a_coordinates is None and not isinstance(a_coordinates, (Tuple, List, np.ndarray)):
+            raise TypeError("The `a_coordinates` should be a `Tuple, List, or np.ndarray`.")
 
         if not isinstance(a_coordinates, np.ndarray):
             a_coordinates = np.array(a_coordinates)
@@ -583,9 +563,7 @@ class Box2DList(BaseObjectList[Box2D]):
             a_coordinates = a_coordinates[np.newaxis]
 
         boxes = Box2DList()
-        boxes.append(
-            a_item=[Box2D.from_xyxy(coord, **kwargs) for coord in a_coordinates]
-        )
+        boxes.append(a_item=[Box2D.from_xyxy(coord, **kwargs) for coord in a_coordinates])
         return boxes
 
     def to_xyxy(self) -> np.ndarray:

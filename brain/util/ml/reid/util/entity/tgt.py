@@ -3,40 +3,60 @@
 
 # region Imported Dependencies
 import uuid
-from datetime import datetime, timezone, timedelta
-from typing import List, Union, Optional
+from typing import List, Union, Optional, TypeVar, Generic
+from brain.util.misc import Time
 from brain.util.ml.reid.util.entity.desc import ReidDescList
-from brain.util.obj import BaseObject, BaseObjectList, BaseObjectDict
+from brain.util.ml.reid.util.entity.state import ReidState, TypeReidState
+from brain.util.obj import ExtBaseObject, BaseObjectList, BaseObjectDict
 
 # endregion Imported Dependencies
 
 
+# TODO(doc): Complete the document of following type
+TypeReidTarget = TypeVar("TypeReidTarget", bound="ReidTarget")
+
+
 # TODO(doc): Complete the document of following class
-class ReidTarget(BaseObject):
+class ReidTarget(Generic[TypeReidState], ExtBaseObject):
     def __init__(
         self,
+        a_time: Time,
         a_id: Optional[uuid.UUID] = None,
-        a_timestamp: Optional[datetime] = None,
         a_descriptors: Optional[ReidDescList] = None,
         a_num_desc: int = -1,
+        a_state: Optional[ReidState] = None,
+        a_state_type: type[ReidState] = ReidState,
         a_name: str = "ReidTarget",
     ):
-        super().__init__(a_name=a_name)
-        self.timestamp: datetime = (
-            datetime.now().astimezone(tz=timezone(timedelta(hours=0))) if a_timestamp is None else a_timestamp
-        )
+        super().__init__(a_name=a_name, a_time=a_time)
         self.id: uuid.UUID = a_id
         self.descriptors: ReidDescList = (
             a_descriptors if a_descriptors is not None else ReidDescList(a_max_size=a_num_desc)
         )
+        self._state_type: type[ReidState] = a_state_type
+        self.state: ReidState = a_state if a_state else self._state_type(time=a_time)
+
+    @property
+    def state(self) -> TypeReidState:
+        return self._state
+
+    @state.setter
+    def state(self, a_stats: ReidState) -> None:
+        if a_stats is not None and not isinstance(a_stats, ReidState):
+            raise TypeError(f"`a_stats` argument must be an `ReidState` but it's type is `{type(a_stats)}`")
+        self._state: ReidState = a_stats
 
     def to_dict(self) -> dict:
-        dic = {"name": self.name, "id": self.id, "timestamp": self.timestamp, "descriptors": self.descriptors.to_dict()}
+        dic = {"name": self.name, "id": self.id, "time": self.time, "descriptors": self.descriptors.to_dict()}
         return dic
 
-    def update(self, a_timestamp: datetime, a_id: uuid.UUID) -> None:
-        self.timestamp = a_timestamp
-        self.id = a_id
+    def update(self, a_inst: TypeReidTarget) -> None:
+        self.time = a_inst.time.copy()
+        self.id = a_inst.id
+
+
+# TODO(doc): Complete the document of following type
+TypeReidTargetList = TypeVar("TypeReidTargetList", bound="ReidTargetList")
 
 
 # TODO(doc): Complete the document of following class
@@ -59,6 +79,10 @@ class ReidTargetNestedList(BaseObjectList[ReidTargetList]):
         a_items: Union[ReidTargetList, List[ReidTargetList], "ReidTargetNestedList"] = None,
     ):
         super().__init__(a_name=a_name, a_max_size=a_max_size, a_items=a_items)
+
+
+# TODO(doc): Complete the document of following type
+TypeReidTargetDict = TypeVar("TypeReidTargetDict", bound="ReidTargetDict")
 
 
 # TODO(doc): Complete the document of following class

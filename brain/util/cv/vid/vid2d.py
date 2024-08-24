@@ -6,19 +6,21 @@
 
 # region Imported Dependencies
 import uuid
-from typing import Union, Tuple
+from datetime import datetime, timezone, timedelta
+from typing import Union, Tuple, Optional
 
 import cv2
 
 from brain.util.cv.shape.sz import Size
 from brain.util.cv.vid import Frame2D
-from brain.util.obj import BaseObject
+from brain.util.misc import Time
+from brain.util.obj import ExtBaseObject
 
 
 # endregion Imported Dependencies
 
 
-class Video2D(BaseObject):
+class Video2D(ExtBaseObject):
     """Video2D
 
     This Python file contains the definition of the Video2D class, which represents a 2D video object for capturing
@@ -31,23 +33,20 @@ class Video2D(BaseObject):
             A string or integer value indicating the resource file or camera number.
         number_of_frames (int):
             An integer representing the total number of frames in the video.
-        current_frame_id (int):
+        step (int):
             An integer representing the current frame's sequential ID in the reading process (starts from 0).
         id (uuid.UUID):
             A UUID specifying the ID of the Video2D object.
         backend (int):
             An integer specifying the video capture backend (e.g., :class:`cv2.CAP_FFMPEG`, :class:`cv2.CAP_V4L2`).
-        inc_fr_num (bool):
-            A bool indicates whether the frame counter is set to be incremented.
     """
 
     def __init__(
         self,
         a_source: Union[str, int],
-        a_id: uuid.UUID = None,
+        a_id: Optional[uuid.UUID] = None,
         a_backend=cv2.CAP_FFMPEG,
         a_name="VIDEO2D",
-        a_inc_fr_num: bool = False,
     ):
         """Video2D Constructor
 
@@ -62,8 +61,6 @@ class Video2D(BaseObject):
                 An integer specifying the video capture backend (e.g., cv2.CAP_FFMPEG) (default is cv2.CAP_FFMPEG).
             a_name (str, optional):
                 A string specifying the name of the object (default is 'VIDEO2D').
-            a_inc_fr_num (bool, optional):
-                Indicates whether the frame counter should be incremented. Defaults to False.
 
         Returns:
             None
@@ -79,18 +76,13 @@ class Video2D(BaseObject):
 
         # region Input Checking
         if a_id is not None and not isinstance(a_id, uuid.UUID):
-            raise TypeError(
-                f"`a_id` argument must be a `UUID` but it's type is `{type(a_id)}`"
-            )
+            raise TypeError(f"`a_id` argument must be a `UUID` but it's type is `{type(a_id)}`")
         # endregion Input Checking
 
-        super().__init__(a_name)
-
+        super().__init__(a_name=a_name, a_time=Time(a_step=-1))
         self._id: uuid.UUID = a_id if a_id is not None else uuid.uuid4()
-        self._current_frame_id: int = -1
         self.source: Union[str, int] = a_source
         self.backend = a_backend
-        self.inc_fr_num: bool = a_inc_fr_num
         self.video_capture: cv2.VideoCapture = None
         self.initialize_video()
 
@@ -116,13 +108,9 @@ class Video2D(BaseObject):
                     self.source = int(self.source)
             self.video_capture = cv2.VideoCapture(self.source, self.backend)
         except cv2.error as e:
-            raise Exception(
-                f"An Unexpected OpenCV error occurred during initializing the video. The error is `{e}`"
-            )
+            raise Exception(f"An Unexpected OpenCV error occurred during initializing the video. The error is `{e}`")
         except Exception as e:
-            raise Exception(
-                f"An Unexpected OpenCV error occurred during initializing the camera. The error is `{e}`"
-            )
+            raise Exception(f"An Unexpected OpenCV error occurred during initializing the camera. The error is `{e}`")
 
     def read(self) -> Tuple[bool, Frame2D]:
         """Read Video Frame
@@ -147,22 +135,13 @@ class Video2D(BaseObject):
         try:
             ret, frame = self.video_capture.read()
         except cv2.error as e:
-            raise Exception(
-                f"An Unexpected OpenCV error occurred during reading video's frame. The error is `{e}`"
-            )
+            raise Exception(f"An Unexpected OpenCV error occurred during reading video's frame. The error is `{e}`")
         except Exception as e:
-            raise Exception(
-                f"An Unexpected OpenCV error occurred during reading video's frame. The error is `{e}`"
-            )
+            raise Exception(f"An Unexpected OpenCV error occurred during reading video's frame. The error is `{e}`")
 
         if ret:
-            frame_seq_id = None
-            if self.inc_fr_num:
-                self._current_frame_id += 1
-                frame_seq_id = self._current_frame_id
-            frame = Frame2D(
-                a_data=frame, a_video_id=self._id, a_sequence_id=frame_seq_id
-            )
+            self._time.increment()
+            frame = Frame2D(a_data=frame, a_video_id=self._id, a_time=self._time.copy())
         return ret, frame
 
     @property
@@ -247,18 +226,6 @@ class Video2D(BaseObject):
                 An integer representing the total number of frames in the video.
         """
         return int(self.video_capture.get(cv2.CAP_PROP_FRAME_COUNT))
-
-    @property
-    def current_frame_id(self) -> int:
-        """Current Frame's ID Getter
-
-        Property that returns the sequential ID of the current frame during video frame reading.
-
-        Returns:
-            int:
-                An integer representing the sequential ID of the current frame being read from the video.
-        """
-        return self._current_frame_id
 
     @property
     def id(self) -> uuid:

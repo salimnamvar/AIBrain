@@ -20,9 +20,7 @@ from brain.util.cv.vid import Frame2D
 # endregion Imported Dependencies
 
 
-def resize_aspect_ratio(
-    a_image: Union[Image2D, Frame2D], a_aspect_ratio: float
-) -> Union[Image2D, Frame2D]:
+def resize_aspect_ratio(a_image: Union[Image2D, Frame2D], a_aspect_ratio: float) -> Union[Image2D, Frame2D]:
     """Resize an image to a specified aspect ratio.
 
     This method resizes the input image to match the specified aspect ratio while preserving the original content.
@@ -45,13 +43,9 @@ def resize_aspect_ratio(
             If the input image is not an instance of `Image2D`, or if the aspect ratio is not a float.
     """
     if a_image is None or not isinstance(a_image, Image2D):
-        raise TypeError(
-            f"`a_image` argument must be an `Image2D` but it's type is `{type(a_image)}`"
-        )
+        raise TypeError(f"`a_image` argument must be an `Image2D` but it's type is `{type(a_image)}`")
     if a_aspect_ratio is None or not isinstance(a_aspect_ratio, float):
-        raise TypeError(
-            f"`a_aspect_ratio` argument must be an `float` but it's type is `{type(a_aspect_ratio)}`"
-        )
+        raise TypeError(f"`a_aspect_ratio` argument must be an `float` but it's type is `{type(a_aspect_ratio)}`")
 
     if a_image.aspect_ratio > a_aspect_ratio:
         new_width = int(a_image.height * a_aspect_ratio)
@@ -65,9 +59,9 @@ def resize_aspect_ratio(
     if isinstance(img, np.ndarray):
         if isinstance(a_image, Frame2D):
             img = Frame2D(
+                a_time=a_image.time,
                 a_data=img,
                 a_filename=a_image.filename,
-                a_sequence_id=a_image.sequence_id,
                 a_id=a_image.id,
                 a_video_id=a_image.video_id,
                 a_name=a_image.name,
@@ -108,28 +102,18 @@ def resize(
 
     # region Input Checking
     if a_image is None or not isinstance(a_image, Image2D):
-        raise TypeError(
-            f"`a_image` argument must be an `Image2D` but it's type is `{type(a_image)}`"
-        )
+        raise TypeError(f"`a_image` argument must be an `Image2D` but it's type is `{type(a_image)}`")
     if a_size is None or not isinstance(a_size, Size):
-        raise TypeError(
-            f"`a_size` argument must be an `Size` but it's type is `{type(a_size)}`"
-        )
+        raise TypeError(f"`a_size` argument must be an `Size` but it's type is `{type(a_size)}`")
 
     if not isinstance(a_fx, int):
-        raise TypeError(
-            f"`a_fx` argument must be an `int` but it's type is `{type(a_fx)}`"
-        )
+        raise TypeError(f"`a_fx` argument must be an `int` but it's type is `{type(a_fx)}`")
 
     if not isinstance(a_fy, int):
-        raise TypeError(
-            f"`a_fy` argument must be an `int` but it's type is `{type(a_fy)}`"
-        )
+        raise TypeError(f"`a_fy` argument must be an `int` but it's type is `{type(a_fy)}`")
 
     if not isinstance(a_interpolation, int):
-        raise TypeError(
-            f"`a_interpolation` argument must be an `int` but it's type is `{type(a_interpolation)}`"
-        )
+        raise TypeError(f"`a_interpolation` argument must be an `int` but it's type is `{type(a_interpolation)}`")
     # endregion Input Checking
 
     img = cv2.resize(a_image.data, a_size.to_tuple(), a_fx, a_fy, a_interpolation)
@@ -137,9 +121,9 @@ def resize(
     if isinstance(img, np.ndarray):
         if isinstance(a_image, Frame2D):
             img = Frame2D(
+                a_time=a_image.time,
                 a_data=img,
                 a_filename=a_image.filename,
-                a_sequence_id=a_image.sequence_id,
                 a_id=a_image.id,
                 a_video_id=a_image.video_id,
                 a_name=a_image.name,

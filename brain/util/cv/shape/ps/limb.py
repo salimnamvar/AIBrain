@@ -7,12 +7,12 @@ This module contains utility classes for handling operations related to pose est
 from typing import List
 import numpy as np
 from brain.util.cv.shape.pt import KeyPoint2D
-from brain.util.obj import BaseObject, BaseObjectList
+from brain.util.obj import ExtBaseObject, BaseObjectList
 
 # endregion Imported Dependencies
 
 
-class Limb2D(BaseObject):
+class Limb2D(ExtBaseObject):
     """Represents a 2D limb consisting of two keypoints.
 
     Attributes:

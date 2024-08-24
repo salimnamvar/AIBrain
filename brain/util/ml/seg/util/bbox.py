@@ -158,39 +158,27 @@ class SegBBox2D(BBox2D):
             ValueError: If the coordinates array has less than 5 elements, or if the mask array
                 is not a 2D array, or if the coordinates array is multidimensional.
         """
-        if a_coordinates is None and not isinstance(
-            a_coordinates, (Tuple, List, np.ndarray)
-        ):
-            raise TypeError(
-                "The `a_coordinates` should be a `Tuple, List, or np.ndarray`."
-            )
+        if a_coordinates is None and not isinstance(a_coordinates, (Tuple, List, np.ndarray)):
+            raise TypeError("The `a_coordinates` should be a `Tuple, List, or np.ndarray`.")
 
         if a_mask is None or (
-            not isinstance(a_mask, np.ndarray)
-            and not np.issubdtype(a_mask.dtype, [np.floating, np.uint8])
+            not isinstance(a_mask, np.ndarray) and not np.issubdtype(a_mask.dtype, [np.floating, np.uint8])
         ):
-            raise TypeError(
-                "The `a_mask` must be a `npt.NDArray[np.floating | np.uint8]`."
-            )
+            raise TypeError("The `a_mask` must be a `npt.NDArray[np.floating | np.uint8]`.")
 
         if not isinstance(a_coordinates, np.ndarray):
             a_coordinates = np.array(a_coordinates)
 
         if a_coordinates.shape[-1] < 5:
             raise ValueError(
-                f"`a_coordinates` array should have at least length 5 but it is in shape of"
-                f" {a_coordinates.shape}."
+                f"`a_coordinates` array should have at least length 5 but it is in shape of" f" {a_coordinates.shape}."
             )
 
         if a_mask.ndim != 2:
-            raise ValueError(
-                f"`a_mask` array must be a 2D array but it has {a_mask.ndim} dimensions."
-            )
+            raise ValueError(f"`a_mask` array must be a 2D array but it has {a_mask.ndim} dimensions.")
 
         if a_coordinates.ndim > 1:
-            raise ValueError(
-                f"`a_coordinates` array should be a 1D array but it has {a_coordinates.ndim} dimensions."
-            )
+            raise ValueError(f"`a_coordinates` array should be a 1D array but it has {a_coordinates.ndim} dimensions.")
 
     @classmethod
     def from_xyxys(
@@ -374,6 +362,20 @@ class SegBBox2D(BBox2D):
         else:
             raise IndexError("Index out of range for SegBBox2D object")
 
+    # TODO(doc): Complete the document of following method
+    def to_bbox2d(self) -> BBox2D:
+        return BBox2D(
+            a_p1=self.p1,
+            a_p2=self.p2,
+            a_score=self.score,
+            a_img_size=self.img_size,
+            a_strict=self.strict,
+            a_conf_thre=self.conf_thre,
+            a_min_size_thre=self.min_size_thre,
+            a_do_validate=self.do_validate,
+            a_name=self.name,
+        )
+
 
 class SegBBox2DList(BBox2DList, BaseObjectList[SegBBox2D]):
     """2D Segmented Bounding Box List
@@ -435,26 +437,15 @@ class SegBBox2DList(BBox2DList, BaseObjectList[SegBBox2D]):
             TypeError: If the input arrays are not of the expected types.
             ValueError: If the input arrays do not have the expected shapes.
         """
-        if a_coordinates is None and not isinstance(
-            a_coordinates, (Tuple, List, np.ndarray)
-        ):
-            raise TypeError(
-                "The `a_coordinates` should be a `Tuple, List, or np.ndarray`."
-            )
+        if a_coordinates is None and not isinstance(a_coordinates, (Tuple, List, np.ndarray)):
+            raise TypeError("The `a_coordinates` should be a `Tuple, List, or np.ndarray`.")
 
         if a_masks is None or (
-            not isinstance(a_masks, np.ndarray)
-            and not np.issubdtype(a_masks.dtype, [np.floating, np.uint8])
+            not isinstance(a_masks, np.ndarray) and not np.issubdtype(a_masks.dtype, [np.floating, np.uint8])
         ):
-            raise TypeError(
-                "The `a_mask` must be a `npt.NDArray[np.floating | np.uint8]`."
-            )
+            raise TypeError("The `a_mask` must be a `npt.NDArray[np.floating | np.uint8]`.")
 
-        if (
-            a_labels is None
-            and not isinstance(a_labels, np.ndarray)
-            and not np.issubdtype(a_labels.dtype, np.integer)
-        ):
+        if a_labels is None and not isinstance(a_labels, np.ndarray) and not np.issubdtype(a_labels.dtype, np.integer):
             raise TypeError("The `a_label` must be a `npt.NDArray[np.integer]`.")
 
         if not isinstance(a_coordinates, np.ndarray):
@@ -467,9 +458,7 @@ class SegBBox2DList(BBox2DList, BaseObjectList[SegBBox2D]):
             )
 
         if a_masks.ndim != 3:
-            raise ValueError(
-                f"`a_mask` array must be a batched 2D array but it has {a_masks.ndim} dimensions."
-            )
+            raise ValueError(f"`a_mask` array must be a batched 2D array but it has {a_masks.ndim} dimensions.")
 
         if a_coordinates.ndim == 1:
             a_coordinates = a_coordinates[np.newaxis]
@@ -504,17 +493,13 @@ class SegBBox2DList(BBox2DList, BaseObjectList[SegBBox2D]):
         """
 
         # Validate array
-        coordinates = cls.validate_array(
-            a_coordinates=a_coordinates, a_masks=a_masks, a_labels=a_labels
-        )
+        coordinates = cls.validate_array(a_coordinates=a_coordinates, a_masks=a_masks, a_labels=a_labels)
 
         # Instantiate bounding boxes
         bboxes = SegBBox2DList()
         bboxes.append(
             a_item=[
-                SegBBox2D.from_xyxys(
-                    a_coordinates=coord, a_mask=mask, a_label=label, **kwargs
-                )
+                SegBBox2D.from_xyxys(a_coordinates=coord, a_mask=mask, a_label=label, **kwargs)
                 for coord, mask, label in zip(coordinates, a_masks, a_labels)
             ]
         )
@@ -547,17 +532,13 @@ class SegBBox2DList(BBox2DList, BaseObjectList[SegBBox2D]):
             SegBBox2DList: An instance of the SegBBox2DList class.
         """
         # Validate array
-        coordinates = cls.validate_array(
-            a_coordinates=a_coordinates, a_masks=a_masks, a_labels=a_labels
-        )
+        coordinates = cls.validate_array(a_coordinates=a_coordinates, a_masks=a_masks, a_labels=a_labels)
 
         # Instantiate bounding boxes
         bboxes = SegBBox2DList()
         bboxes.append(
             a_item=[
-                SegBBox2D.from_xywhs(
-                    a_coordinates=coord, a_mask=mask, a_label=label, **kwargs
-                )
+                SegBBox2D.from_xywhs(a_coordinates=coord, a_mask=mask, a_label=label, **kwargs)
                 for coord, mask, label in zip(coordinates, a_masks, a_labels)
             ]
         )
@@ -590,17 +571,13 @@ class SegBBox2DList(BBox2DList, BaseObjectList[SegBBox2D]):
             SegBBox2DList: An instance of the SegBBox2DList class.
         """
         # Validate array
-        coordinates = cls.validate_array(
-            a_coordinates=a_coordinates, a_masks=a_masks, a_labels=a_labels
-        )
+        coordinates = cls.validate_array(a_coordinates=a_coordinates, a_masks=a_masks, a_labels=a_labels)
 
         # Instantiate bounding boxes
         bboxes = SegBBox2DList()
         bboxes.append(
             a_item=[
-                SegBBox2D.from_cxywhs(
-                    a_coordinates=coord, a_mask=mask, a_label=label, **kwargs
-                )
+                SegBBox2D.from_cxywhs(a_coordinates=coord, a_mask=mask, a_label=label, **kwargs)
                 for coord, mask, label in zip(coordinates, a_masks, a_labels)
             ]
         )

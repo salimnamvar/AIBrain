@@ -16,24 +16,67 @@ Functions:
 """
 
 # region Imported Dependencies
+import numpy as np
+import numpy.typing as npt
 import pprint
-from abc import ABC
 from copy import deepcopy
-from typing import TypeVar, Generic, List, Union, Callable, Any, Iterator
+from typing import TypeVar, Generic, List, Union, Callable, Any, Iterator, Tuple, Sequence, Optional
+from brain.util.misc.type import is_int, is_bool
 
 # endregion Imported Dependencies
 
 
-T = TypeVar("T")
+TypeItem = TypeVar("TItem")
 """
-A type variable used in generic classes.
+A type variable used in generic classes to represent the element type.
 
-`T` represents the element type of the generic class and is typically used in generic classes like 
-:class:`BaseObjectList`.
+`T` is a type variable that is commonly used in generic class definitions to specify the type of elements
+contained within the class. It allows for flexibility and type safety when defining and working with generic
+classes and methods.
+
+Attributes:
+    type (Type): Represents the type of elements that the generic class or method will work with.
+
+Usage:
+    - In a generic class, `T` defines the type of the items in the collection. For example, in a class 
+    `BaseObjectList[T]`, `T` specifies the type of objects stored in the list.
+    - In a generic method, `T` can represent the type of parameters or return values to ensure that the
+    method operates with the expected type.
+
+Example:
+    class BaseObjectList(Generic[T]):
+        def __init__(self, items: List[T]):
+            self._items = items
+
+    def get_first_item(self) -> T:
+        return self._items[0]
+"""
+
+TypeBaseObjectList = TypeVar("TypeBaseObjectList", bound="BaseObjectList")
+"""
+A type variable used in generic classes to represent a type that is bound to the `BaseObjectList` class.
+
+`TList` is a type variable that is specifically used to indicate a type that extends or is a subclass of the
+`BaseObjectList` class. It is used in generic class definitions and method signatures to ensure type consistency
+within the context of `BaseObjectList` and its subclasses.
+
+Attributes:
+    bound (Type[BaseObjectList]): The class to which `TList` is bound, ensuring that it can only be used with types
+    that are derived from `BaseObjectList`.
+
+Example:
+    If you have a subclass of `BaseObjectList` such as `MyObjectList`, you can use `TList` to refer to the type
+    `MyObjectList` in method signatures or other generic contexts.
+
+    class MyObjectList(BaseObjectList):
+        ...
+
+    def some_method(self: TList) -> TList:
+        ...
 """
 
 
-class BaseObjectList(Generic[T], ABC):
+class BaseObjectList(Generic[TypeItem]):
     """Base Object List
 
     The `BaseObjectList` class represents a list of objects of type `T`.
@@ -48,7 +91,11 @@ class BaseObjectList(Generic[T], ABC):
     """
 
     def __init__(
-        self, a_items: Union[T, List[T], "BaseObjectList"] = None, a_name: str = "ObjectList", a_max_size: int = -1
+        self,
+        a_items: Union[TypeItem, List[TypeItem], "BaseObjectList"] = None,
+        a_name: str = "ObjectList",
+        a_max_size: int = -1,
+        a_item_type: Optional[type] = None,
     ):
         """
         Constructor for the `BaseObjectList` class.
@@ -60,13 +107,15 @@ class BaseObjectList(Generic[T], ABC):
                 An :type:`int` representing the maximum size of the list (default is -1, indicating no size limit).
             a_items (List[T], optional):
                 A list of objects of type :class:`T` to initialize the `BaseObjectList` (default is None).
-
+            a_item_type (type, optional):
+                The value data type that specifies the type of values in the list.
         Returns:
             None: The constructor does not return any values.
         """
         self.name: str = a_name
         self._max_size: int = a_max_size
-        self._items: List[T] = []
+        self._item_type: type = a_item_type
+        self._items: List[TypeItem] = []
 
         if a_items is not None:
             self.append(a_item=a_items)
@@ -115,7 +164,7 @@ class BaseObjectList(Generic[T], ABC):
         Raises:
             TypeError: If `a_max_size` is not an integer.
         """
-        if a_max_size is None or not isinstance(a_max_size, float):
+        if a_max_size is None or not isinstance(a_max_size, int):
             raise TypeError("The `a_max_size` must be a `int`.")
         self._max_size: int = a_max_size
 
@@ -130,7 +179,7 @@ class BaseObjectList(Generic[T], ABC):
         """
         dict_items = []
         for item in self._items:
-            dict_items.append(item.to_dict())
+            dict_items.append(item.to_dict() if hasattr(item, "to_dict") else item)
         return dict_items
 
     def to_str(self) -> str:
@@ -157,7 +206,7 @@ class BaseObjectList(Generic[T], ABC):
         return self.to_str()
 
     @property
-    def items(self) -> List[T]:
+    def items(self) -> List[TypeItem]:
         """
         Get the list of items in the `BaseObjectList`.
 
@@ -168,10 +217,59 @@ class BaseObjectList(Generic[T], ABC):
         """
         return self._items
 
-    def __getitem__(self, a_index: int) -> T:
-        return self._items[a_index]
+    def __getitem__(
+        self: TypeBaseObjectList,
+        a_index: Union[
+            int,
+            List[int],
+            Tuple[int],
+            npt.NDArray[np.integer],
+            Sequence[int],
+            List[bool],
+            Tuple[bool],
+            npt.NDArray[bool],
+            Sequence[bool],
+            slice,
+        ],
+    ) -> Union[TypeItem, TypeBaseObjectList]:
+        """
+        Retrieve the value(s) associated with the given index or slice.
 
-    def __setitem__(self, a_index: int, a_item: T):
+        This method supports retrieving single items, multiple items via lists or numpy arrays of indices,
+        boolean indexing, and slicing similar to Python lists.
+
+        Args:
+            a_index (Union[int, List[int], Tuple[int], np.ndarray, Sequence[int], List[bool], Tuple[bool],
+            np.ndarray[bool], Sequence[bool], slice]):
+                The index, list of indices, tuple of indices, numpy array of indices, sequence of booleans,
+                or a slice to retrieve values.
+
+        Returns:
+            Union[T, BaseObjectList]: The value associated with a single index, or a new instance containing
+            the retrieved items for multiple indices, boolean indexing, or slices.
+
+        Raises:
+            TypeError: If `a_index` is not of the supported types (int, list, tuple, numpy array of integers,
+            sequence of booleans, or slice).
+            ValueError: If the boolean sequence length does not match the length of the list.
+        """
+        if isinstance(a_index, (int, np.integer)):
+            return self._items[a_index]
+        elif isinstance(a_index, (list, tuple, np.ndarray)):
+            if is_int(a_index):
+                return self.__class__(a_items=[self._items[i] for i in a_index])
+            elif is_bool(a_index):
+                if len(a_index) != len(self._items):
+                    raise ValueError("Boolean sequence length must match the length of the list.")
+                return self.__class__(a_items=[item for item, flag in zip(self._items, a_index) if flag])
+            else:
+                raise TypeError("All elements in the list, tuple, or numpy array must be either integers or booleans.")
+        elif isinstance(a_index, slice):
+            return self.__class__(a_items=self._items[a_index])
+        else:
+            raise TypeError("Index must be an int, list, tuple, numpy array of integers, or slice.")
+
+    def __setitem__(self, a_index: int, a_item: TypeItem):
         """
         Get an item from the `BaseObjectList` by index.
 
@@ -187,7 +285,7 @@ class BaseObjectList(Generic[T], ABC):
 
     def append(
         self,
-        a_item: Union[T, List[T], "BaseObjectList"],
+        a_item: Union[TypeItem, List[TypeItem], "BaseObjectList"],
         a_removal_strategy: str = "first",
     ):
         """
@@ -209,7 +307,7 @@ class BaseObjectList(Generic[T], ABC):
         else:
             self._append_item(a_item, a_removal_strategy)
 
-    def _append_item(self, a_item: T, a_removal_strategy: str = "first") -> None:
+    def _append_item(self, a_item: TypeItem, a_removal_strategy: str = "first") -> None:
         """
         Append an item to the `BaseObjectList` (Internal).
 
@@ -223,6 +321,11 @@ class BaseObjectList(Generic[T], ABC):
         Returns:
             None
         """
+        self._clip(a_removal_strategy=a_removal_strategy)
+        self._items.append(a_item)
+
+    # TODO(doc): Complete the document of following method
+    def _clip(self, a_removal_strategy: str = "first") -> None:
         if self._max_size != -1 and len(self) >= self._max_size:
             if a_removal_strategy.lower() == "first":
                 self._items.pop(0)
@@ -230,7 +333,6 @@ class BaseObjectList(Generic[T], ABC):
                 self._items.pop()
             else:
                 raise ValueError("Invalid removal strategy. Use 'first' or 'last'.")
-        self._items.append(a_item)
 
     def __delitem__(self, a_index: int):
         """
@@ -246,7 +348,7 @@ class BaseObjectList(Generic[T], ABC):
         """
         del self._items[a_index]
 
-    def copy(self) -> "BaseObjectList[T]":
+    def copy(self: TypeBaseObjectList) -> TypeBaseObjectList:
         """
         Create a deep copy of the `BaseObjectList`.
 
@@ -279,7 +381,7 @@ class BaseObjectList(Generic[T], ABC):
         """
         self._items = []
 
-    def __contains__(self, a_item: T):
+    def __contains__(self, a_item: TypeItem):
         """Check if the list contains the specified item.
 
         Args:
@@ -304,7 +406,19 @@ class BaseObjectList(Generic[T], ABC):
         """
         self._items.pop(a_index)
 
-    def sort(self, a_key: Callable[[T], Any] = None, a_reverse: bool = False) -> None:
+    # TODO(doc): Complete the document of following method
+    def pop_first(self) -> None:
+        if not self._items:
+            raise KeyError("pop_first(): list is empty")
+        self._items.pop(0)
+
+    # TODO(doc): Complete the document of following method
+    def pop_last(self) -> None:
+        if not self._items:
+            raise KeyError("pop_last(): list is empty")
+        self._items.pop()
+
+    def sort(self, a_key: Callable[[TypeItem], Any] = None, a_reverse: bool = False) -> None:
         """
         Sort the items in the list.
 
@@ -321,7 +435,7 @@ class BaseObjectList(Generic[T], ABC):
         """
         self._items.sort(key=a_key, reverse=a_reverse)
 
-    def __iter__(self) -> Iterator[T]:
+    def __iter__(self) -> Iterator[TypeItem]:
         """
         Return an iterator over the items in the list.
 
@@ -330,7 +444,7 @@ class BaseObjectList(Generic[T], ABC):
         """
         return iter(self._items)
 
-    def filter(self, a_condition: Callable[[T], bool]) -> "BaseObjectList[T]":
+    def filter(self: TypeBaseObjectList, a_condition: Callable[[TypeItem], bool]) -> TypeBaseObjectList:
         """
         Filter items in the `BaseObjectList` based on a given condition and return a new `BaseObjectList` instance.
 
@@ -341,4 +455,4 @@ class BaseObjectList(Generic[T], ABC):
             BaseObjectList[T]: A new `BaseObjectList` instance containing filtered items.
         """
         filtered_items = [item for item in self._items if a_condition(item)]
-        return BaseObjectList(a_items=deepcopy(filtered_items))
+        return self.__class__(a_items=deepcopy(filtered_items))

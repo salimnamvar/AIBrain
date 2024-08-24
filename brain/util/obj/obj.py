@@ -7,6 +7,7 @@ to represent an object as a dictionary, convert it to a string, and create deep 
 
 Classes:
     BaseObject (ABC): A principle basic object class.
+    ExtBaseObject (ABC): An extended basic object class.
 
 Variables:
     None
@@ -15,13 +16,16 @@ Functions:
     None
 """
 
-
 # region Imported Dependencies
 import pprint
 from abc import ABC, abstractmethod
 from copy import deepcopy
+from typing import TypeVar
 
 # endregion Imported Dependencies
+
+# TODO(doc): Complete the document of following type
+TypeBaseObject = TypeVar("TypeBaseObject", bound="BaseObject")
 
 
 class BaseObject(ABC):
@@ -35,7 +39,10 @@ class BaseObject(ABC):
             A :type:`string` that specifies the class object name.
     """
 
-    def __init__(self, a_name: str = "Object") -> None:
+    def __init__(
+        self,
+        a_name: str = "Object",
+    ) -> None:
         """Base Object
 
         This is a constructor that create an instance of the BaseObject object.
@@ -108,7 +115,7 @@ class BaseObject(ABC):
         """
         return self.to_str()
 
-    def copy(self) -> "BaseObject":
+    def copy(self) -> TypeBaseObject:
         """Copy Instance
 
         This method copies the object deeply.

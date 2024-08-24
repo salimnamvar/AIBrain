@@ -2,24 +2,23 @@
 """
 
 # region Imported Dependencies
-from datetime import datetime, timezone, timedelta
 from typing import List, Union
 import numpy as np
 import numpy.typing as npt
-from brain.util.obj import BaseObject, BaseObjectList
+from brain.util.misc import Time
+from brain.util.obj import ExtBaseObject, BaseObjectList
 
 # region Imported Dependencies
 
 
 # TODO(doc): Complete the document of following class
-class ReidDesc(BaseObject):
+class ReidDesc(ExtBaseObject):
     def __init__(
-        self, a_features: npt.NDArray[np.floating], a_extractor: str = "FeatExt", a_name: str = "ReidDesc"
+        self, a_time: Time, a_features: npt.NDArray[np.floating], a_extractor: str = "FeatExt", a_name: str = "ReidDesc"
     ) -> None:
-        super().__init__(a_name=a_name)
+        super().__init__(a_name=a_name, a_time=a_time)
         self._extractor: str = a_extractor
         self._features: np.ndarray = a_features
-        self._timestamp: datetime = datetime.now().astimezone(tz=timezone(timedelta(hours=0)))
 
     @property
     def features(self) -> np.ndarray:
@@ -29,12 +28,8 @@ class ReidDesc(BaseObject):
     def extractor(self) -> str:
         return self._extractor
 
-    @property
-    def timestamp(self) -> datetime:
-        return self._timestamp
-
     def to_dict(self) -> dict:
-        dic = {"name": self.name, "extractor": self.extractor, "features": self.features, "timestamp": self.timestamp}
+        dic = {"name": self.name, "extractor": self.extractor, "features": self.features, "time": self.time}
         return dic
 
 

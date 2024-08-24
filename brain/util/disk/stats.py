@@ -4,13 +4,13 @@ This module provides a utility class for representing disk usage statistics.
 """
 
 # region Imported Dependencies
-from brain.util.obj import BaseObject
+from brain.util.obj import ExtBaseObject
 
 
 # endregion Imported Dependencies
 
 
-class DiskStats(BaseObject):
+class DiskStats(ExtBaseObject):
     """
     Represents disk usage statistics.
 
@@ -22,8 +22,15 @@ class DiskStats(BaseObject):
         free_percentage (float): Percentage of free disk space.
     """
 
-    def __init__(self, a_total: float, a_used: float, a_used_percentage: float,
-                 a_free: float, a_free_percentage: float, a_name: str = 'DiskStats') -> None:
+    def __init__(
+        self,
+        a_total: float,
+        a_used: float,
+        a_used_percentage: float,
+        a_free: float,
+        a_free_percentage: float,
+        a_name: str = "DiskStats",
+    ) -> None:
         """
         Initialize DiskStats object.
 
@@ -49,10 +56,13 @@ class DiskStats(BaseObject):
         Returns:
             dict: A dictionary representation of the disk statistics.
         """
-        dic = {'Disk_Usage_Statistics': {'Total': self.total,
-                                         'Used': self.used,
-                                         'Used_Percentage': self.used_percentage,
-                                         'Free': self.free,
-                                         'Free_Percentage': self.free_percentage
-                                         }}
+        dic = {
+            "Disk_Usage_Statistics": {
+                "Total": self.total,
+                "Used": self.used,
+                "Used_Percentage": self.used_percentage,
+                "Free": self.free,
+                "Free_Percentage": self.free_percentage,
+            }
+        }
         return dic

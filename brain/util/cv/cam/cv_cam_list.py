@@ -12,13 +12,11 @@ import traceback
 import uuid
 import warnings
 from typing import List
-
 from brain.util.cfg import BrainConfig
 from brain.util.cv.cam import Camera
 from brain.util.cv.vid import Frame2DList
-from brain.util.misc import BaseHealthStatus
+from brain.util.misc import BaseHealthStatus, TimeList
 from brain.util.obj import BaseObjectList
-
 
 # endregion Imported Dependencies
 
@@ -143,11 +141,10 @@ class CameraList(BaseObjectList[Camera]):
         Returns:
             Frame2DList: A :class:`Frame2DList` object containing the latest frames from all cameras.
         """
-        return Frame2DList(
-            a_items=[camera.frame for camera in self.items if len(camera.frames) > 0]
-        )
+        return Frame2DList(a_items=[camera.frame for camera in self.items if len(camera.frames) > 0])
 
-    def get_ids(self) -> List[uuid.UUID]:
+    @property
+    def ids(self) -> List[uuid.UUID]:
         """Get IDs of all cameras.
 
         Returns a list of UUIDs extracted from the :class:`Camera` objects in the list.
@@ -156,3 +153,14 @@ class CameraList(BaseObjectList[Camera]):
             List[uuid.UUID]: A list of UUIDs.
         """
         return [item.id for item in self.items]
+
+    @property
+    def times(self) -> TimeList:
+        """Get current time information of all cameras
+
+        Returns a list of Time extracted from the :class:`Camera` objects in the list.
+
+        Returns:
+            TimeList: A list of Time objects.
+        """
+        return TimeList(a_items=[cam.time for cam in self.items])

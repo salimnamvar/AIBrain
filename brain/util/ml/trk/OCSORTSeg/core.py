@@ -109,9 +109,7 @@ class OCSORTSeg(OCSORT):
                 a_do_validate=False,
             )
             # Update matched target
-            self.tracked_population[a_frame.video_id][target_idx].update(
-                a_state=State(a_box=box)
-            )
+            self.tracked_population[a_frame.video_id][target_idx].update(a_state=State(a_box=box))
 
     def _byte_associate(
         self,
@@ -124,15 +122,9 @@ class OCSORTSeg(OCSORT):
         unmatched_trks = a_unmatched_targets_idx
 
         # BYTE association
-        if (
-            self._use_byte
-            and len(a_dets_second) > 0
-            and a_unmatched_targets_idx.shape[0] > 0
-        ):
+        if self._use_byte and len(a_dets_second) > 0 and a_unmatched_targets_idx.shape[0] > 0:
             u_trks = a_targets[a_unmatched_targets_idx]
-            iou_left = self._associate(
-                a_dets_second, u_trks
-            )  # iou between low score detections and unmatched tracks
+            iou_left = self._associate(a_dets_second, u_trks)  # iou between low score detections and unmatched tracks
             iou_left = np.array(iou_left)
             if iou_left.max() > self.iou_thre:
                 """
@@ -154,16 +146,12 @@ class OCSORTSeg(OCSORT):
                         a_do_validate=False,
                     )
                     # Update target
-                    self.tracked_population[a_frame.video_id][trk_ind].update(
-                        a_state=State(a_box=box)
-                    )
+                    self.tracked_population[a_frame.video_id][trk_ind].update(a_state=State(a_box=box))
 
                     # Add the target index to remove target
                     to_remove_trk_indices.append(trk_ind)
 
-                unmatched_trks = np.setdiff1d(
-                    a_unmatched_targets_idx, np.array(to_remove_trk_indices)
-                )
+                unmatched_trks = np.setdiff1d(a_unmatched_targets_idx, np.array(to_remove_trk_indices))
         return unmatched_trks
 
     def _associate_unmatched_dets_targets(
@@ -207,17 +195,11 @@ class OCSORTSeg(OCSORT):
                         a_do_validate=False,
                     )
                     # Update target
-                    self.tracked_population[a_frame.video_id][trk_ind].update(
-                        a_state=State(a_box=box)
-                    )
+                    self.tracked_population[a_frame.video_id][trk_ind].update(a_state=State(a_box=box))
                     to_remove_det_indices.append(det_ind)
                     to_remove_trk_indices.append(trk_ind)
-                unmatched_dets = np.setdiff1d(
-                    a_unmatched_dets_idx, np.array(to_remove_det_indices)
-                )
-                unmatched_trks = np.setdiff1d(
-                    a_unmatched_targets_idx, np.array(to_remove_trk_indices)
-                )
+                unmatched_dets = np.setdiff1d(a_unmatched_dets_idx, np.array(to_remove_det_indices))
+                unmatched_trks = np.setdiff1d(a_unmatched_targets_idx, np.array(to_remove_trk_indices))
 
         return unmatched_dets, unmatched_trks
 
@@ -338,9 +320,7 @@ class OCSORTSeg(OCSORT):
             )
 
             # Update unmatched targets
-            self._update_unmatched_targets(
-                a_unmatched_targets_idx=unmatched_trks, a_frame=a_frame
-            )
+            self._update_unmatched_targets(a_unmatched_targets_idx=unmatched_trks, a_frame=a_frame)
 
             # Create and initialise new target for unmatched detections
             self._create_target(
