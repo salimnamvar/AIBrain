@@ -4,13 +4,13 @@
 # region Imported Dependencies
 import uuid
 from typing import List
-from brain.util.obj import BaseObject, BaseObjectList
+from brain.util.obj import ExtBaseObject, BaseObjectList
 
 # endregion Imported Dependencies
 
 
 # TODO(doc): Complete the document of following class
-class MTE(BaseObject):
+class MTE(ExtBaseObject):
     def __init__(
         self,
         a_tgt: int,

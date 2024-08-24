@@ -10,15 +10,17 @@ from datetime import datetime, timezone, timedelta
 from typing import Optional, List, Union
 import numpy as np
 from filterpy.kalman import KalmanFilter
+
+from brain.util.misc import Time
 from .stat import TargetStatistics
 from .state import State, StateDict
-from brain.util.obj import BaseObject, BaseObjectList, BaseObjectDict
+from brain.util.obj import ExtBaseObject, BaseObjectList, BaseObjectDict
 from brain.util.cv.shape.bx import BBox2D
 
 # endregion Imported Dependencies
 
 
-class KFTarget(BaseObject):
+class KFTarget(ExtBaseObject):
     """Trackable Kalman-Filter Target.
 
     This class represents a trackable target using the Kalman filter.
@@ -53,6 +55,7 @@ class KFTarget(BaseObject):
         self,
         a_state: State,
         a_num_st_thre: int,
+        a_time: Time,
         a_delta_time: Optional[int] = 3,
         a_id: Optional[uuid.UUID] = None,
         a_name: Optional[str] = "KFTarget",
@@ -62,6 +65,7 @@ class KFTarget(BaseObject):
         Args:
             a_state (State): Initial state of the target.
             a_num_st_thre (int): Maximum size of the observation states dictionary.
+            a_time (Time): Time information of the initialization step.
             a_delta_time (int, optional): Time delay for speed calculation (default is 3).
             a_id (uuid.UUID, optional): Unique identifier for the target (default is None).
             a_name (str, optional): Name of the target (default is "KFTarget").
@@ -76,7 +80,7 @@ class KFTarget(BaseObject):
 
         super().__init__(a_name=a_name)
         # Timestamp
-        self.timestamp: datetime = datetime.now().astimezone(tz=timezone(timedelta(hours=0)))
+        self.time: Time = a_time
         # Unique Identity
         self.id: uuid.UUID = a_id if a_id is not None else uuid.uuid4()
         # Delta time as the delay for calculation of speed
@@ -85,7 +89,7 @@ class KFTarget(BaseObject):
         self._statistics: TargetStatistics = TargetStatistics(a_name=f"{self.name} Statistics")
 
         # Initialize Observation States
-        self._states: StateDict = StateDict(a_max_size=a_num_st_thre, a_name=f"{self.name} States")
+        self._states: StateDict = StateDict(a_max_size=a_num_st_thre, a_name=f"{self.name} States", a_key_type=int)
         # Initialize the latest state
         self._state: State = a_state
         # Add the first state
@@ -106,7 +110,7 @@ class KFTarget(BaseObject):
             "id": self.id,
             "state": self.state.to_dict(),
             "states": self.states.to_dict(),
-            "timestamp": self.timestamp,
+            "timestamp": self.time,
             "statistics": self.statistics.to_dict(),
             "kf": self._kf.__repr__(),
             "delta_time": self.delta_time,
@@ -169,36 +173,6 @@ class KFTarget(BaseObject):
 
         # Set the initial state using the bounding box in the format of [center_x, center_y, area, aspect_ratio]
         self._kf.x[:4] = a_state.box.to_cxyar()[:, np.newaxis]
-
-    @property
-    def timestamp(self) -> datetime:
-        """Get the timestamp of the Kalman Filter target.
-
-        The timestamp represents the date and time when the Kalman Filter target was instantiated.
-
-        Returns:
-            datetime: The timestamp of the object.
-        """
-        return self._timestamp
-
-    @timestamp.setter
-    def timestamp(self, a_timestamp: datetime) -> None:
-        """Set the timestamp of the Kalman Filter target.
-
-        This method sets the timestamp attribute of the Kalman Filter target instance.
-
-        Args:
-            a_timestamp (datetime): The new timestamp value to be set.
-
-        Raises:
-            TypeError: If `a_timestamp` is not an instance of the `datetime` class.
-
-        Returns:
-            None
-        """
-        if a_timestamp is None or not isinstance(a_timestamp, datetime):
-            raise TypeError("The `a_timestamp` must be a `datetime`.")
-        self._timestamp: datetime = a_timestamp
 
     @property
     def id(self) -> uuid.UUID:

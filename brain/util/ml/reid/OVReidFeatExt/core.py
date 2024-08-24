@@ -6,6 +6,7 @@ import cv2
 import numpy as np
 from openvino.runtime.utils.data_helpers import OVDict
 from brain.util.cv.img import Image2D
+from brain.util.misc import Time
 from brain.util.ml.reid.util import OVReidFeatExtModel, ReidDesc
 
 # endregion Imported Dependencies
@@ -45,7 +46,9 @@ class OVReidFeatExt(OVReidFeatExtModel):
 
     def _postproc(self, a_preds: OVDict, a_image: Image2D) -> ReidDesc:
         self.validate_mdl()
-        desc = ReidDesc(a_features=a_preds["reid_embedding"].flatten(), a_extractor=self.name)
+        desc = ReidDesc(
+            a_features=a_preds["reid_embedding"].flatten(), a_extractor=self.name, a_time=a_image.time.copy()
+        )
         return desc
 
     def infer(self, *args, a_image: Image2D, **kwargs) -> ReidDesc:

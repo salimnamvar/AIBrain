@@ -12,6 +12,24 @@ import numpy as np
 # endregion Import Dependencies
 
 
+def is_bool(a_value):
+    """
+    Check if the given value is a bool, an array of bools, or a list of bools.
+
+    Args:
+        a_value: The value to be checked. It can be a single value, a NumPy array, or a list.
+
+    Returns:
+        bool: True if the value is a bool, an array of bools, or a list of bools, False otherwise.
+    """
+    if isinstance(a_value, (list, tuple)):
+        return all(is_bool(v) for v in a_value)
+    if isinstance(a_value, np.ndarray):
+        return np.issubdtype(a_value.dtype, np.bool_)
+    else:
+        return np.issubdtype(type(a_value), np.bool_)
+
+
 def is_float(a_value):
     """
     Check if the given value is a float, an array of floats, or a list of floats.

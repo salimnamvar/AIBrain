@@ -4,9 +4,24 @@ This module provides subsequent modules of the Identification Entity modules.
 """
 
 # region Imported Dependencies
+from .state import ReidStateTable, ReidState, ReidStateList, TypeReidState
 from .desc import ReidDesc, ReidDescList
-from .state import ReidEntityState, ReidEntityStateList, ReidEntityStateDict
-from .tgt import ReidTarget, ReidTargetList, ReidTargetDict, ReidTargetNestedList
-from .ent import ReidEntity, ReidEntityList, ReidEntityDict, ReidEntityNestedList
+from .ent import (
+    ReidEntity,
+    TypeReidEntity,
+    ReidEntityList,
+    ReidEntityDict,
+    TypeReidEntityDict,
+    ReidEntityNestedList,
+)
+from .tgt import (
+    ReidTarget,
+    TypeReidTarget,
+    ReidTargetList,
+    TypeReidTargetList,
+    ReidTargetDict,
+    TypeReidTargetDict,
+    ReidTargetNestedList,
+)
 
 # endregion Imported Dependencies

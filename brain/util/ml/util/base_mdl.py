@@ -14,13 +14,13 @@ from abc import abstractmethod, ABC
 from typing import List
 
 from brain.util.cfg import BrainConfig
-from brain.util.obj import BaseObject, BaseObjectList
+from brain.util.obj import ExtBaseObject, BaseObjectList
 
 
 # endregion Imported Dependencies
 
 
-class BaseModel(BaseObject, ABC):
+class BaseModel(ExtBaseObject, ABC):
     """Base Model
 
     The base class for models capable of performing inference, training, and testing.
@@ -31,7 +31,7 @@ class BaseModel(BaseObject, ABC):
         logger (logging.Logger, optional): The logger instance for the model.
     """
 
-    def __init__(self, a_name: str = "BaseModel", a_use_cfg: bool = False):
+    def __init__(self, a_name: str = "BaseModel", a_use_cfg: bool = True):
         """BaseModel Constructor
 
         Args:
@@ -175,7 +175,7 @@ class BaseModelList(BaseObjectList[BaseModel], ABC):
         a_name: str = "BaseModelList",
         a_max_size: int = -1,
         a_items: List[BaseModel] = None,
-        a_use_cfg: bool = False
+        a_use_cfg: bool = False,
     ):
         """
         Constructor for the `BaseModelList` class.

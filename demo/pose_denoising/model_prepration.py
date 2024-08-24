@@ -12,6 +12,9 @@ import tensorflow as tf
 import kagglehub
 
 # Download latest version
-path = kagglehub.model_download("google/movenet/tensorFlow2/singlepose-lightning")
+#path = kagglehub.model_download("google/movenet/tensorFlow2/singlepose-lightning")
+#print("Path to model files:", path)
+#ov.convert_model(input_model=r"G:\Research\AIBrain\Model\movenet\singlepose-lightning\4\saved_model.pb", input=[192,192,3])
 
-print("Path to model files:", path)
+core = ov.Core()
+model = core.read_model(r"G:\Models\movenet\singlepose-lightning\4\4.xml")

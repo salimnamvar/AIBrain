@@ -13,11 +13,10 @@ Note:
 # region Imported Dependencies
 import uuid
 from typing import List, Optional, Tuple
-
 import numpy as np
-
 from brain.util.cv.shape.bx import BBox2DList, BBox2D
 from brain.util.cv.vid import Frame2D
+from brain.util.ml.reid.util import BaseReidModel, ReidTargetList
 from brain.util.ml.trk import TrackedBBox2DDict, TrackedBBox2D, BBoxTrkModel
 from brain.util.ml.trk.OCSORT import (
     PopulationDict,
@@ -67,6 +66,7 @@ class OCSORT(BBoxTrkModel):
         a_assoc_fun: Optional[str] = "iou",
         a_inertia: Optional[float] = 0.2,
         a_use_byte: Optional[bool] = False,
+        a_reid: Optional[BaseReidModel] = None,
         a_name: str = "OCSORT",
     ):
         """
@@ -84,7 +84,7 @@ class OCSORT(BBoxTrkModel):
             a_inertia (Optional[float]): Inertia parameter. Default is 0.2.
             a_use_byte (Optional[bool]): Flag indicating whether to use byte. Default is False.
         """
-        super().__init__(a_name=a_name)
+        super().__init__(a_name=a_name, a_reid=a_reid)
         self.det_thre: float = a_det_thre
         self.max_prediction_age: int = a_max_prediction_age
         self.min_update_age: int = a_min_update_age
@@ -436,6 +436,8 @@ class OCSORT(BBoxTrkModel):
         inds_high = scores < self._det_thre
         inds_second = np.logical_and(inds_low, inds_high)  # self._det_thresh > score > 0.1, for second matching
         dets_second = dets[inds_second]  # detections for second matching
+        boxes_second = a_boxes[inds_second]
+
         remain_inds = scores > self._det_thre
         dets = dets[remain_inds]
 
@@ -470,22 +472,14 @@ class OCSORT(BBoxTrkModel):
 
         k_observations = np.array(tmp)
 
-        return (
-            dets,
-            trks,
-            velocities,
-            k_observations,
-            dets_second,
-            inds_second,
-            last_boxes,
-        )
+        return dets, trks, velocities, k_observations, dets_second, inds_second, last_boxes, boxes_second
 
     def _update_matched_targets(
         self,
         a_matched_pairs: np.ndarray,
-        a_dets: np.ndarray,
+        a_dets: BBox2DList,
         a_frame: Frame2D,
-    ):
+    ) -> None:
         """Update Matched Targets
 
         Updates the tracked targets that are matched in the process of association.
@@ -500,13 +494,13 @@ class OCSORT(BBoxTrkModel):
             det_idx = m[0]
             target_idx = m[1]
 
-            box = BBox2D.from_xyxys(a_coordinates=a_dets[det_idx, :], a_do_validate=False)
-            # Update matched target
-            self.tracked_population[a_frame.video_id][target_idx].update(a_state=State(a_box=box))
+            # UPDATE tracking entity
+            self.tracked_population[a_frame.video_id][target_idx].update(a_state=State(a_box=a_dets[det_idx]))
 
     def _byte_associate(
         self,
         a_dets_second: np.ndarray,
+        a_boxes_second: BBox2DList,
         a_unmatched_targets_idx: np.ndarray,
         a_targets: np.ndarray,
         a_frame: Frame2D,
@@ -545,9 +539,10 @@ class OCSORT(BBoxTrkModel):
                     if iou_left[m[0], m[1]] < self.iou_thre:
                         continue
 
-                    box = BBox2D.from_xyxys(a_coordinates=a_dets_second[det_ind, :], a_do_validate=False)
                     # Update target
-                    self.tracked_population[a_frame.video_id][trk_ind].update(a_state=State(a_box=box))
+                    self.tracked_population[a_frame.video_id][trk_ind].update(
+                        a_state=State(a_box=a_boxes_second[det_ind])
+                    )
 
                     # Add the target index to remove target
                     to_remove_trk_indices.append(trk_ind)
@@ -558,6 +553,7 @@ class OCSORT(BBoxTrkModel):
     def _associate_unmatched_dets_targets(
         self,
         a_dets: np.ndarray,
+        a_boxes: BBox2DList,
         a_last_boxes: np.ndarray,
         a_unmatched_dets_idx: np.ndarray,
         a_unmatched_targets_idx: np.ndarray,
@@ -603,10 +599,8 @@ class OCSORT(BBoxTrkModel):
                     if iou_left[m[0], m[1]] < self.iou_thre:
                         continue
 
-                    box = BBox2D.from_xyxys(a_coordinates=a_dets[det_ind, :], a_do_validate=False)
-
                     # Update target
-                    self.tracked_population[a_frame.video_id][trk_ind].update(a_state=State(a_box=box))
+                    self.tracked_population[a_frame.video_id][trk_ind].update(a_state=State(a_box=a_boxes[det_ind]))
                     to_remove_det_indices.append(det_ind)
                     to_remove_trk_indices.append(trk_ind)
                 unmatched_dets = np.setdiff1d(a_unmatched_dets_idx, np.array(to_remove_det_indices))
@@ -632,7 +626,7 @@ class OCSORT(BBoxTrkModel):
 
     def _create_target(
         self,
-        a_dets: np.ndarray,
+        a_dets: BBox2DList,
         a_unmatched_dets_idx: np.ndarray,
         a_frame: Frame2D,
     ) -> None:
@@ -648,12 +642,10 @@ class OCSORT(BBoxTrkModel):
 
         # Create targets on the unmatched detections
         for i in a_unmatched_dets_idx:
-            # Extract Feature Vector
-            box = BBox2D.from_xyxys(a_coordinates=a_dets[i, :], a_do_validate=False)
-
             # Create target
             target: KFTarget = KFTarget(
-                a_state=State(a_box=box),
+                a_time=a_frame.time,
+                a_state=State(a_box=a_dets[i]),
                 a_num_st_thre=self.num_st_thre,
                 a_delta_time=self.delta_time,
             )
@@ -685,7 +677,7 @@ class OCSORT(BBoxTrkModel):
                 object = TrackedBBox2D(
                     a_id=trk.id,
                     a_name=trk.name,
-                    a_timestamp=trk.timestamp,
+                    a_timestamp=trk.time,
                     a_p1=trk.state.box.p1,
                     a_p2=trk.state.box.p2,
                     a_score=trk.state.box.score,
@@ -724,15 +716,9 @@ class OCSORT(BBoxTrkModel):
 
         if a_boxes is not None and len(a_boxes) > 0:
             # Preprocess
-            (
-                dets,
-                trks,
-                velocities,
-                k_observations,
-                dets_second,
-                inds_second,
-                last_boxes,
-            ) = self._preproc(a_boxes=a_boxes, a_frame=a_frame)
+            dets, trks, velocities, k_observations, dets_second, inds_second, last_boxes, boxes_second = self._preproc(
+                a_boxes=a_boxes, a_frame=a_frame
+            )
 
             # 1- First round of association
             matched, unmatched_dets, unmatched_trks = associate(
@@ -747,13 +733,14 @@ class OCSORT(BBoxTrkModel):
             # Update matched pairs
             self._update_matched_targets(
                 a_matched_pairs=matched,
-                a_dets=dets,
+                a_dets=a_boxes,
                 a_frame=a_frame,
             )
 
             # 2- Second round of association by OCR
             unmatched_trks = self._byte_associate(
                 a_dets_second=dets_second,
+                a_boxes_second=boxes_second,
                 a_unmatched_targets_idx=unmatched_trks,
                 a_targets=trks,
                 a_frame=a_frame,
@@ -762,6 +749,7 @@ class OCSORT(BBoxTrkModel):
             # 3- Third round of association
             unmatched_dets, unmatched_trks = self._associate_unmatched_dets_targets(
                 a_dets=dets,
+                a_boxes=a_boxes,
                 a_last_boxes=last_boxes,
                 a_unmatched_dets_idx=unmatched_dets,
                 a_unmatched_targets_idx=unmatched_trks,
@@ -774,7 +762,7 @@ class OCSORT(BBoxTrkModel):
             # Create and initialise new target for unmatched detections
             self._create_target(
                 a_unmatched_dets_idx=unmatched_dets,
-                a_dets=dets,
+                a_dets=a_boxes,
                 a_frame=a_frame,
             )
 

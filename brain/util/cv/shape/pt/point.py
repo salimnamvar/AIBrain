@@ -9,13 +9,13 @@ from typing import Union, List, Tuple
 import numpy as np
 
 from brain.util.misc import is_int, is_float
-from brain.util.obj import BaseObject, BaseObjectList
+from brain.util.obj import ExtBaseObject, BaseObjectList
 
 
 # endregion Import Dependencies
 
 
-class Point2D(BaseObject):
+class Point2D(ExtBaseObject):
     """Point2D
 
     This class represents a 2D point with x and y coordinates.
@@ -490,3 +490,6 @@ class Point2DNestedList(BaseObjectList[Point2DList]):
         points = cls()
         points.append(a_item=[Point2DList.from_xy(a_coordinates=coord, **kwargs) for coord in coordinates])
         return points
+
+    def to_xy(self) -> np.ndarray:
+        return np.vstack([point.to_xy() for point in self.items])

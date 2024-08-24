@@ -8,6 +8,7 @@ import numpy as np
 from openvino.runtime.utils.data_helpers import OVDict
 from brain.util.cv.img import Image2D
 from brain.util.cv.shape import Size
+from brain.util.misc import Time
 from brain.util.ml.reid.util import OVReidFeatExtModel, ReidDesc
 
 # endregion Imported Dependencies
@@ -50,7 +51,9 @@ class MobileNetv1(OVReidFeatExtModel):
     def _postproc(self, a_preds: OVDict, a_image: Image2D) -> ReidDesc:
         self.validate_mdl()
         desc = ReidDesc(
-            a_features=a_preds["MobilenetV1/MobilenetV1/Conv2d_13_pointwise/Relu6:0"].flatten(), a_extractor=self.name
+            a_features=a_preds["MobilenetV1/MobilenetV1/Conv2d_13_pointwise/Relu6:0"].flatten(),
+            a_extractor=self.name,
+            a_time=a_image.time.copy(),
         )
         return desc
 

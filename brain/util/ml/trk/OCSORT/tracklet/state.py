@@ -8,13 +8,13 @@ and the `StateDict` class for managing a dictionary of states.
 # region Imported Dependencies
 from datetime import datetime, timezone, timedelta
 from typing import List, Union, Optional
-from brain.util.obj import BaseObject, BaseObjectDict, BaseObjectList
+from brain.util.obj import ExtBaseObject, BaseObjectDict, BaseObjectList
 from brain.util.cv.shape.bx import BBox2D
 
 # endregion Imported Dependencies
 
 
-class State(BaseObject):
+class State(ExtBaseObject):
     """Class representing the state of a trackable object.
 
     Attributes:
@@ -97,6 +97,8 @@ class StateDict(BaseObjectDict[int, State]):
         a_max_size: int = -1,
         a_key: Union[int, List[int]] = None,
         a_value: Union[State, List[State]] = None,
+        a_key_type: Optional[type] = None,
+        a_value_type: Optional[type] = None,
     ):
         """Initialize a StateDict instance.
 
@@ -106,5 +108,16 @@ class StateDict(BaseObjectDict[int, State]):
             a_key (Union[int, List[int]], optional): Initial key or keys for the state dictionary (default is None).
             a_value (Union[State, List[State]], optional):
                 Initial value or values for the state dictionary (default is None).
+            a_key_type (type, optional):
+                The key data type that specifies the type of keys in the dictionary.
+            a_value_type (type, optional):
+                The value data type that specifies the type of values in the dictionary.
         """
-        super().__init__(a_name, a_max_size, a_key, a_value)
+        super().__init__(
+            a_name=a_name,
+            a_max_size=a_max_size,
+            a_key=a_key,
+            a_value=a_value,
+            a_key_type=a_key_type,
+            a_value_type=a_value_type,
+        )

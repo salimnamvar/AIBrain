@@ -9,6 +9,7 @@ import time
 import traceback
 import uuid
 import warnings
+from datetime import datetime, timezone, timedelta
 from typing import NoReturn, Tuple, Union
 
 import cv2
@@ -16,7 +17,7 @@ import numpy as np
 
 from brain.util.cfg import BrainConfig
 from brain.util.cv.vid import Frame2D, Video2D, Frame2DList
-from brain.util.misc import BaseHealthStatus
+from brain.util.misc import BaseHealthStatus, Time
 
 
 # endregion Imported Dependencies
@@ -113,13 +114,9 @@ class Camera(Video2D):
         """
         # region Input Checking
         if not isinstance(a_cache_size, int):
-            raise TypeError(
-                f"`a_cache_size` argument must be a `int` but it's type is {type(a_cache_size)}"
-            )
+            raise TypeError(f"`a_cache_size` argument must be a `int` but it's type is {type(a_cache_size)}")
         if a_cache_size < 1:
-            raise TypeError(
-                f"`a_cache_size` argument must be at least +1 but it is {a_cache_size}"
-            )
+            raise TypeError(f"`a_cache_size` argument must be at least +1 but it is {a_cache_size}")
         # endregion Input Checking
 
         super().__init__(a_source=a_source, a_id=a_id, a_backend=a_backend)
@@ -233,16 +230,14 @@ class Camera(Video2D):
         if not ret or frame is None:
             self.health_status.READ_ERROR = True
             msg = (
-                f"{self.name}'s `read` method got an error of `Camera Frame reading is stoped due to unexpected "
+                f"{self.name}'s `read` method got an error of `Camera Frame reading is stopped due to unexpected "
                 f"error`."
             )
             self.logger.fatal(msg)
             raise RuntimeError(msg)
         else:
-            self._current_frame_id += 1
-            frame = Frame2D(
-                a_data=frame, a_sequence_id=self._current_frame_id, a_video_id=self._id
-            )
+            self._time.increment()
+            frame = Frame2D(a_data=frame, a_video_id=self._id, a_time=self._time.copy())
         return ret, frame
 
     def reinitialize_camera(self) -> Tuple[bool, np.ndarray]:
@@ -269,15 +264,11 @@ class Camera(Video2D):
         frame = None
         while current_time < end_time:
             i += 1
-            self.logger.info(
-                f"{self.name} is trying to re-initialize itself; the trial number is {i}."
-            )
+            self.logger.info(f"{self.name} is trying to re-initialize itself; the trial number is {i}.")
             self.initialize_video()
             if self.is_opened:
                 ret, frame = self.video_capture.read()
-                self.logger.info(
-                    f"{self.name} is correctly re-initialized; the trial number is {i}."
-                )
+                self.logger.info(f"{self.name} is correctly re-initialized; the trial number is {i}.")
                 break
             else:
                 msg = f"{self.name} failed in re-initialization of trial {i}."

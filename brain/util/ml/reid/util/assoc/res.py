@@ -3,13 +3,13 @@
 
 # region Imported Dependencies
 from brain.util.ml.reid.util.assoc import MTEList, UMTList, UMEList
-from brain.util.obj import BaseObject
+from brain.util.obj import ExtBaseObject
 
 # endregion Imported Dependencies
 
 
 # TODO(doc): Complete the document of following class
-class Associations(BaseObject):
+class Associations(ExtBaseObject):
     def __init__(self, a_name: str = "Associations"):
         super().__init__(a_name=a_name)
         self.matched_pairs: MTEList = MTEList()
