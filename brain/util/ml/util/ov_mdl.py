@@ -10,7 +10,7 @@ Classes:
 
 # region Imported Dependencies
 from abc import abstractmethod, ABC
-from typing import List
+from typing import List, Tuple
 
 from openvino import CompiledModel, Core
 from openvino._pyopenvino import Shape
@@ -124,17 +124,30 @@ class OVModel(BaseModel, ABC):
         self._mdl: CompiledModel = a_mdl
 
     @property
-    def mdl_inp_shape(self) -> Shape:
+    def mdl_inp_shape(self) -> Tuple[int, ...]:
         """Getter for the input shape of the model.
 
         Returns:
-            Shape: The input shape of the model.
+            Tuple[int, ...]: The input shape of the model.
 
         Raises:
             TypeError: If the model is not loaded.
         """
         self.validate_mdl()
-        return self.mdl.inputs[0].shape
+        try:
+            # Attempt to retrieve the partial shape of the first input
+            partial_shape = self.mdl.inputs[0].get_partial_shape()
+
+            if partial_shape.is_static:
+                # If the shape is static, return as Shape
+                return tuple(partial_shape.to_shape())
+            else:
+                # If the shape is dynamic, return as PartialShape
+                return tuple(d.get_length() if d.is_static else None for d in partial_shape)
+        except RuntimeError:
+            raise TypeError("Unable to retrieve input shape due to a dynamic shape error.")
+        except Exception as e:
+            raise TypeError(f"Unexpected error when retrieving input shape: {e}")
 
     @property
     def mdl_inp_size(self) -> Size:

@@ -4,7 +4,6 @@
 # region Imported Dependencies
 from abc import abstractmethod, ABC
 from brain.util.cv.img import Image2D
-from brain.util.ml.reid.util import ReidDesc
 from brain.util.ml.util import BaseModel
 
 
@@ -23,5 +22,5 @@ class ReidFeatExtModel(BaseModel, ABC):
         NotImplementedError("Subclasses must implement `_postproc`")
 
     @abstractmethod
-    def infer(self, *args, a_image: Image2D, **kwargs) -> ReidDesc:
+    def infer(self, *args, a_image: Image2D, **kwargs):
         NotImplementedError("Subclasses must implement `infer`")

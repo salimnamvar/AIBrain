@@ -217,7 +217,7 @@ class BaseObjectTable(Generic[TypeBaseTableRow]):
             for field in fields(a_data):
                 key = field.name
                 value = getattr(a_data, key)
-                self.data[key].append(a_item=value, a_removal_strategy=a_removal_strategy)
+                self.data[key].append(a_item=value, a_removal_strategy=a_removal_strategy, a_merge=False)
 
         elif isinstance(a_data, dict):
             if len(a_data) != self.cols:
@@ -225,11 +225,11 @@ class BaseObjectTable(Generic[TypeBaseTableRow]):
                     f"Length of the row ({len(a_data)}) must match length of row in the table ({self.cols})"
                 )
             for key, value in a_data.items():
-                self.data[key].append(a_item=value, a_removal_strategy=a_removal_strategy)
+                self.data[key].append(a_item=value, a_removal_strategy=a_removal_strategy, a_merge=False)
 
         elif isinstance(a_data, (list, tuple, BaseObjectList)):
             for i, value in enumerate(a_data):
-                self.data[self.col_keys[i]].append(a_item=value, a_removal_strategy=a_removal_strategy)
+                self.data[self.col_keys[i]].append(a_item=value, a_removal_strategy=a_removal_strategy, a_merge=False)
 
         else:
             raise ValueError(f"Row data must be `list`, `Row`, or `dict`, but it is passed as `{type(a_data)}`")
@@ -312,3 +312,7 @@ class BaseObjectTable(Generic[TypeBaseTableRow]):
     @property
     def last_row(self) -> TypeBaseTableRow:
         return self[:, -1]
+
+    def clear(self) -> None:
+        for col_key, col in self.data.items():
+            col.clear()

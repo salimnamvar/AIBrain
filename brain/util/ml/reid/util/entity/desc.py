@@ -1,4 +1,4 @@
-"""Object Re-identification Descriptor Module.
+"""Object Descriptor Base Module.
 """
 
 # region Imported Dependencies
@@ -14,7 +14,7 @@ from brain.util.obj import ExtBaseObject, BaseObjectList
 # TODO(doc): Complete the document of following class
 class ReidDesc(ExtBaseObject):
     def __init__(
-        self, a_time: Time, a_features: npt.NDArray[np.floating], a_extractor: str = "FeatExt", a_name: str = "ReidDesc"
+        self, a_time: Time, a_features: npt.NDArray[np.floating], a_extractor: str = "FeatExt", a_name: str = "Desc"
     ) -> None:
         super().__init__(a_name=a_name, a_time=a_time)
         self._extractor: str = a_extractor
@@ -37,7 +37,7 @@ class ReidDesc(ExtBaseObject):
 class ReidDescList(BaseObjectList[ReidDesc]):
     def __init__(
         self,
-        a_name: str = "ReidDescList",
+        a_name: str = "DescList",
         a_max_size: int = -1,
         a_items: Union[ReidDesc, List[ReidDesc], "ReidDescList"] = None,
     ):

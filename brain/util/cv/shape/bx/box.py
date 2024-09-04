@@ -9,9 +9,8 @@
     Bounding boxes support operations like intersection, union, and IoU (Intersection over Union).
 """
 
-import math
-
 # region Import Dependencies
+import math
 from typing import Union, Tuple, List
 
 import numpy as np
