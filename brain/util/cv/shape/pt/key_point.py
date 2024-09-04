@@ -170,16 +170,14 @@ class KeyPoint2D(Point2D):
         return dic
 
     @classmethod
-    def from_xy(
-        cls, a_coordinates: Union[Tuple, List, np.ndarray], **kwargs
-    ) -> "KeyPoint2D":
-        """Create a KeyPoint2D instance from XY coordinates.
+    def from_xys(cls, a_coordinates: Union[Tuple, List, np.ndarray], **kwargs) -> "KeyPoint2D":
+        """Create a KeyPoint2D instance from (x, y, s) coordinates.
 
         This method creates a KeyPoint2D instance based on the provided XY coordinates and additional keyword arguments.
 
         Args:
             a_coordinates (Union[Tuple, List, np.ndarray]):
-                The XY coordinates. For a simple keypoint, pass a tuple or list with two elements (x, y).
+                The XY coordinates. For a simple keypoint, pass a tuple or list with two elements (x, y, s).
                 For a keypoint with a score, pass a tuple or list with three elements (x, y, score).
             **kwargs:
                 Additional keyword arguments to pass to the KeyPoint2D constructor.
@@ -194,9 +192,7 @@ class KeyPoint2D(Point2D):
         cls.validate_array(a_coordinates=a_coordinates)
 
         if len(a_coordinates) == 2:
-            keypoint: KeyPoint2D = KeyPoint2D(
-                a_x=a_coordinates[0], a_y=a_coordinates[1], **kwargs
-            )
+            keypoint: KeyPoint2D = KeyPoint2D(a_x=a_coordinates[0], a_y=a_coordinates[1], **kwargs)
         elif len(a_coordinates) == 3:
             keypoint: KeyPoint2D = KeyPoint2D(
                 a_x=a_coordinates[0],
@@ -208,6 +204,14 @@ class KeyPoint2D(Point2D):
             raise ValueError("Invalid number of coordinates for keypoint.")
 
         return keypoint
+
+    def to_xys(self) -> np.ndarray:
+        """Convert to NumPy Array of format [x, y, s]
+
+        Returns:
+            np.ndarray: A NumPy array representation of the keypoint.
+        """
+        return np.concatenate((self.to_xy(), [self.score]))
 
 
 class KeyPoint2DList(Point2DList, BaseObjectList[KeyPoint2D]):
@@ -243,10 +247,8 @@ class KeyPoint2DList(Point2DList, BaseObjectList[KeyPoint2D]):
         super().__init__(a_name=a_name, a_max_size=a_max_size, a_items=a_items)
 
     @classmethod
-    def from_xy(
-        cls, a_coordinates: Union[Tuple, List, np.ndarray], **kwargs
-    ) -> "KeyPoint2DList":
-        """Create a KeyPoint2DList from a list of (x, y) coordinates.
+    def from_xys(cls, a_coordinates: Union[Tuple, List, np.ndarray], **kwargs) -> "KeyPoint2DList":
+        """Create a KeyPoint2DList from a list of (x, y, s) coordinates.
 
         Args:
             a_coordinates (Union[Tuple, List, np.ndarray]): The input coordinates to create KeyPoint2D instances.
@@ -264,10 +266,17 @@ class KeyPoint2DList(Point2DList, BaseObjectList[KeyPoint2D]):
 
         # Instantiate points
         keypoints = cls()
-        keypoints.append(
-            a_item=[
-                KeyPoint2D.from_xy(a_coordinates=coord, **kwargs)
-                for coord in coordinates
-            ]
-        )
+        keypoints.append(a_item=[KeyPoint2D.from_xys(a_coordinates=coord, **kwargs) for coord in coordinates])
         return keypoints
+
+    def to_xys(self) -> np.ndarray:
+        """Convert the KeyPoint2DList to a NumPy array of (x, y, s) coordinates.
+
+        Returns:
+            np.ndarray: A NumPy array containing (x, y, s) coordinates of all keypoints in the KeyPoint2DList.
+        """
+        if len(self.items):
+            arr = np.vstack([point.to_xys() for point in self.items])
+        else:
+            arr = np.empty(shape=(0, 3))
+        return arr

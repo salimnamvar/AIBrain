@@ -433,7 +433,11 @@ class Point2DList(BaseObjectList[Point2D]):
         Returns:
             np.ndarray: A NumPy array containing (x, y) coordinates of all keypoints in the Point2DList.
         """
-        return np.vstack([point.to_xy() for point in self.items])
+        if len(self.items):
+            arr = np.vstack([point.to_xy() for point in self.items])
+        else:
+            arr = np.empty(shape=(0, 2))
+        return arr
 
     @classmethod
     def from_xy(cls, a_coordinates: Union[Tuple, List, np.ndarray], **kwargs) -> "Point2DList":

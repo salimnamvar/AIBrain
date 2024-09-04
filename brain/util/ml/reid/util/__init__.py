@@ -4,8 +4,9 @@ This module provides subsequent utility modules of Object Re-identification mode
 """
 
 # region Imported Dependencies
-from brain.util.ml.reid.util.entity.desc import ReidDesc, ReidDescList
 from brain.util.ml.reid.util.model.ov_reid_feat_ext_mdl import OVReidFeatExtModel
+from .model import OVReidFeatExtModel, ReidFeatExtModel, BaseReidModel
+from .assoc import MTE, MTEList, UMTList, UMEList, Associations
 from .entity import (
     ReidDesc,
     ReidDescList,
@@ -19,7 +20,5 @@ from .entity import (
     ReidEntityDict,
     TypeReidEntity,
 )
-from .model import OVReidFeatExtModel, ReidFeatExtModel, BaseReidModel
-from .assoc import MTE, MTEList, UMTList, UMEList, Associations
 
 # endregion Imported Dependencies

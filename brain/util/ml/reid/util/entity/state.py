@@ -82,5 +82,5 @@ class ReidStateTable(BaseObjectTable[TypeReidState]):
         return self.last_row
 
     @property
-    def time(self) -> BaseObjectList[float]:
+    def time(self) -> BaseObjectList[Time]:
         return self["time"]

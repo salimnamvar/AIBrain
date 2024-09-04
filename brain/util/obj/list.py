@@ -287,6 +287,7 @@ class BaseObjectList(Generic[TypeItem]):
         self,
         a_item: Union[TypeItem, List[TypeItem], "BaseObjectList"],
         a_removal_strategy: str = "first",
+        a_merge: bool = True,
     ):
         """
         Append an item or a list of items to the `BaseObjectList`.
@@ -295,13 +296,15 @@ class BaseObjectList(Generic[TypeItem]):
 
         Args:
             a_item (Union[T, List[T]]): An item or a list of items to append.
-            a_removal_strategy (str): The strategy for removing items when the maximum size is reached. Options:
-            `first` (default) or `last`.
+            a_removal_strategy (str):
+                The strategy for removing items when the maximum size is reached. Options: `first` (default) or `last`.
+            a_merge (bool):
+                The flag that indicates if the same `BaseObjectList` is passed to be merged appended as an item.
 
         Returns:
             None
         """
-        if isinstance(a_item, (list, self.__class__)):
+        if isinstance(a_item, (list, tuple)) or (isinstance(a_item, self.__class__) and a_merge):
             for item in a_item:
                 self._append_item(item, a_removal_strategy)
         else:

@@ -12,7 +12,7 @@ from abc import ABC, abstractmethod
 
 from brain.util.cv.img import Image2D
 from brain.util.cv.shape.bx import BBox2D
-from brain.util.cv.shape.ps.coco import Pose2DList, Pose2D
+from brain.util.cv.shape.ps.coco_17 import COCO17Pose2DList, COCO17Pose2D
 from brain.util.ml.util import OVModel
 
 
@@ -92,14 +92,14 @@ class OVSPosEstModel(OVModel, ABC):
         NotImplementedError("Subclasses must implement `_postproc`")
 
     @abstractmethod
-    def infer(self, a_image: Image2D, a_box: BBox2D) -> Pose2D:
+    def infer(self, a_image: Image2D, a_box: BBox2D) -> COCO17Pose2D:
         """Performs pose estimation on a single person.
 
         Args:
             a_image (Image2D): Input image.
             a_box (BBox2D): Bounding box containing the person.
         Returns:
-            Pose2D: Estimated pose.
+            COCO17Pose2D: Estimated pose.
         """
         NotImplementedError("Subclasses must implement `infer`")
 
@@ -178,12 +178,12 @@ class OVMPosEstModel(OVModel, ABC):
         NotImplementedError("Subclasses must implement `_postproc`")
 
     @abstractmethod
-    def infer(self, *args, a_image: Image2D, **kwargs) -> Pose2DList:
+    def infer(self, *args, a_image: Image2D, **kwargs) -> COCO17Pose2DList:
         """Performs pose estimation on multiple people.
 
         Args:
             a_image (Image2D): Input image.
         Returns:
-            Pose2DList: List of estimated poses.
+            COCO17Pose2DList: List of estimated poses.
         """
         NotImplementedError("Subclasses must implement `infer`")

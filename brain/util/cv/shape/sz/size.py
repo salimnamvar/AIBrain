@@ -4,10 +4,11 @@ This module defines a `Size` class, which represents the dimensions of an object
 
 """
 
-import math
-
 # region Import Dependencies
+import math
 from typing import Union
+
+import numpy as np
 
 from brain.util.misc.type import is_int, is_float
 from brain.util.obj import ExtBaseObject
@@ -26,7 +27,7 @@ class Size(ExtBaseObject):
             The width of the object.
         height (Union[int, float]):
             The height of the object.
-        area (int):
+        area (Union[int, float]):
             The area of the object.
         aspect_ratio (float):
             The aspect ratio of the object.
@@ -267,7 +268,7 @@ class Size(ExtBaseObject):
         return self.width / self.height
 
     @property
-    def area(self) -> int:
+    def area(self) -> int | float:
         """Calculate the area of the Size.
 
         Returns:
@@ -286,3 +287,100 @@ class Size(ExtBaseObject):
                    sqrt(width^2 + height^2).
         """
         return math.hypot(self.width, self.height)
+
+    def __mul__(self, a_size: Union[float, "Size"]) -> "Size":
+        """Multiply Size by a float or another Size object.
+
+        Args:
+            a_size (Union[float, Size]): The multiplier, which can be a float or another Size object.
+
+        Returns:
+            Size: A new Size object with width and height multiplied.
+
+        Raises:
+            TypeError: If `other` is not a float or a valid Size object.
+        """
+        if isinstance(a_size, (float, int)):
+            return Size(self.width * a_size, self.height * a_size)
+        elif isinstance(a_size, Size):
+            return Size(self.width * a_size.width, self.height * a_size.height)
+        else:
+            raise TypeError("The multiplier should be a float or a `Size`.")
+
+    def __add__(self, a_size: Union[float, "Size"]) -> "Size":
+        """Add a float or another Size object to the current Size.
+
+        Args:
+            a_size (Union[float, Size]): The value to add, which can be a float or another Size object.
+
+        Returns:
+            Size: A new Size object with width and height added.
+
+        Raises:
+            TypeError: If `other` is not a float or a valid Size object.
+        """
+        if isinstance(a_size, (float, int)):
+            return Size(self.width + a_size, self.height + a_size)
+        elif isinstance(a_size, Size):
+            return Size(self.width + a_size.width, self.height + a_size.height)
+        else:
+            raise TypeError("The value to add should be a float or a `Size`.")
+
+    def __sub__(self, a_size: Union[float, "Size"]) -> "Size":
+        """Subtract a float or another Size object from the current Size.
+
+        Args:
+            a_size (Union[float, Size]): The value to subtract, which can be a float or another Size object.
+
+        Returns:
+            Size: A new Size object with width and height subtracted.
+
+        Raises:
+            TypeError: If `other` is not a float or a valid Size object.
+        """
+        if isinstance(a_size, (float, int)):
+            return Size(self.width - a_size, self.height - a_size)
+        elif isinstance(a_size, Size):
+            return Size(self.width - a_size.width, self.height - a_size.height)
+        else:
+            raise TypeError("The value to subtract should be a float or a `Size`.")
+
+    def __truediv__(self, a_size: Union[float, "Size"]) -> "Size":
+        """Divide Size by a float or another Size object.
+
+        Args:
+            a_size (Union[float, Size]): The divisor, which can be a float or another Size object.
+
+        Returns:
+            Size: A new Size object with width and height divided.
+
+        Raises:
+            TypeError: If `other` is not a float or a valid Size object.
+            ZeroDivisionError: If attempting to divide by zero.
+        """
+        if isinstance(a_size, (float, int)):
+            if a_size == 0:
+                raise ZeroDivisionError("Cannot divide by zero.")
+            return Size(self.width / a_size, self.height / a_size)
+        elif isinstance(a_size, Size):
+            if a_size.width == 0 or a_size.height == 0:
+                raise ZeroDivisionError("Cannot divide by zero size dimensions.")
+            return Size(self.width / a_size.width, self.height / a_size.height)
+        else:
+            raise TypeError("The divisor should be a float or a `Size`.")
+
+    def to_list(self) -> list:
+        """Convert to List
+
+        Returns:
+            list: A list representation of the size.
+        """
+        return list(self)
+
+    def to_numpy(self) -> np.ndarray:
+        """Convert to NumPy Array
+
+        Returns:
+            np.ndarray: A NumPy array representation of the size.
+        """
+        return np.asarray(self.to_list())
