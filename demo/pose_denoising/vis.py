@@ -3,9 +3,9 @@
 
 # region Imported Dependencies
 import cv2
-from brain.util.cv.shape.ps import Pose2D
-from brain.util.cv.vid import Frame2D
-from brain.util.ml.seg import SegBBox2D
+from brain.cv.shape.ps import Pose2D
+from brain.cv import Frame2D
+from brain.ml.seg import SegBBox2D
 # endregion Imported Dependencies
 
 def visualize(
