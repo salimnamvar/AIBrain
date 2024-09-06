@@ -8,9 +8,9 @@ from typing import List
 import numpy as np
 from filterpy.kalman import KalmanFilter
 
-from brain.util.cv.shape.ps import Pose2D
-from brain.util.ml.seg import SegBBox2D
-from brain.util.obj import BaseObject, BaseObjectList
+from brain.cv.shape.ps import Pose2D
+from brain.ml.seg import SegBBox2D
+from brain.obj import BaseObject, BaseObjectList
 # endregion Imported Dependencies
 
 

@@ -5,11 +5,11 @@ Using Pose Estimator to estimate the body skeleton and Kalman Filter to denoise 
 
 # region Imported Dependencies
 import cv2
-from brain.util.cv.shape import Size
-from brain.util.cv.shape.ps import Pose2D
-from brain.util.cv.vid import Frame2D
-from brain.util.ml.pos.MNetSPTv4 import MNetSingPose
-from brain.util.ml.seg import OVIS, SegBBox2DList
+from brain.cv import Size
+from brain.cv.shape.ps import Pose2D
+from brain.cv import Frame2D
+from brain.ml.pos.MNetSPTv4 import MNetSingPose
+from brain.ml.seg import OVIS, SegBBox2DList
 from demo.pose_denoising.trk import Tracker, State
 from demo.pose_denoising.vis import visualize
 # endregion Imported Dependencies
