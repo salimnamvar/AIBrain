@@ -5,31 +5,27 @@ Using Pose Estimator to estimate the body skeleton and Kalman Filter to denoise 
 
 # region Imported Dependencies
 import cv2
-from brain.utils.cfg import BrainConfig
-from brain.utils.cv.shape import Size
-from brain.utils.cv.shape.ps import Pose2D
-from brain.utils.cv.vid import Frame2D
-from brain.utils.ml.pos.MNetSPTv4 import MNetSPTv4
-from brain.utils.ml.seg import OVIS, SegBBox2DList
+from brain.cv import Size
+from brain.cv.shape.ps import Pose2D
+from brain.cv import Frame2D
+from brain.ml.pos.MNetSPTv4 import MNetSingPose
+from brain.ml.seg import OVIS, SegBBox2DList
 from demo.pose_denoising.trk import Tracker, State
 from demo.pose_denoising.vis import visualize
 # endregion Imported Dependencies
 
 
 if __name__ == "__main__":
-    cfg: BrainConfig = BrainConfig.get_instance(
-        a_cfg="cfg.properties"
-    )
-    pose_estimator = MNetSPTv4(
+    pose_estimator = MNetSingPose(
         a_name="MNetSPTv4",
-        a_mdl_path="saved_model.xml",
+        a_mdl_path=r"G:\Models\movenet\singlepose-lightning\4\4.xml",
         a_mdl_device="CPU",
         a_conf_thre=0.0,
     )
     pose_estimator.load_mdl()
     person_detector = OVIS(
         a_name="ISP0007",
-        a_mdl_path="instance-segmentation-person-0007.xml",
+        a_mdl_path=r"G:\Models\intel\instance-segmentation-person-0007\FP32\instance-segmentation-person-0007.xml",
         a_mdl_device="CPU",
         a_conf_thre=0.1,
         a_nms_thre=0.45,
@@ -37,7 +33,7 @@ if __name__ == "__main__":
         a_min_size_thre=Size(50, 50),
     )
     person_detector.load_mdl()
-    video = cv2.VideoCapture("3.mp4")
+    video = cv2.VideoCapture(r"G:\Research\AIBrain\Data\1.mp4")
 
     iter = 0
     trk: Tracker = None
