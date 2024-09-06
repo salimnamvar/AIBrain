@@ -2,7 +2,7 @@
 """
 
 # region Imported Dependencies
-from dataclasses import dataclass, fields
+from dataclasses import dataclass, fields, asdict
 import pprint
 from copy import deepcopy
 from typing import TypeVar, Dict, Generic, Tuple, Sequence, List, Union, Type, Optional, get_args
@@ -31,6 +31,12 @@ TypeBaseObjectTable = TypeVar("TypeBaseObjectTable", bound="BaseObjectTable")
 @dataclass
 class BaseTableRow:
     NotImplementedError("Subclasses must implement `fields`")
+
+    def to_dict(self) -> dict:
+        return asdict(self)
+
+    def to_list(self) -> list:
+        return list(self.to_dict().values())
 
 
 # TODO(doc): Complete the document of following class
