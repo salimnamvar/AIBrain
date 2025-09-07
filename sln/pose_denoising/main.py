@@ -8,8 +8,8 @@ import cv2
 from aib.cv import Size
 from aib.cv.shape.ps import Pose2D
 from aib.cv import Frame2D
-from aib.ml.pos.MNetSPTv4 import MNetSingPose
-from aib.ml.seg import OVIS, SegBBox2DList
+from aib.legacy.pos.MNetSPTv4 import MNetSingPose
+from aib.legacy.seg import OVIS, SegBBox2DList
 from demo.pose_denoising.trk import Tracker, State
 from demo.pose_denoising.vis import visualize
 # endregion Imported Dependencies

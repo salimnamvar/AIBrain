@@ -1,9 +1,18 @@
-"""Configuration Utility Module
+"""Configuration Utilities
 
-This module contains configuration utilities and functions.
+Submodules:
+    - config: Main configuration management
+    - type_parser: Type parsing helpers
 """
 
+# Submodules
+from . import type_parser
 
-# region Imported Dependencies
-from .config import BrainConfig
-# endregion Imported Dependencies
+# Main exports
+from .config import Configuration
+
+# Public API
+__all__ = [
+    "Configuration",
+    "type_parser",
+]

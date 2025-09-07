@@ -9,7 +9,7 @@ import numpy as np
 from filterpy.kalman import KalmanFilter
 
 from aib.cv.shape.ps import Pose2D
-from aib.ml.seg import SegBBox2D
+from aib.legacy.seg import SegBBox2D
 from aib.obj import BaseObject, BaseObjectList
 # endregion Imported Dependencies
 

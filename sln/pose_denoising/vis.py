@@ -5,7 +5,7 @@
 import cv2
 from aib.cv.shape.ps import Pose2D
 from aib.cv import Frame2D
-from aib.ml.seg import SegBBox2D
+from aib.legacy.seg import SegBBox2D
 # endregion Imported Dependencies
 
 def visualize(
