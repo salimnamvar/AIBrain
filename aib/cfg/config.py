@@ -12,8 +12,8 @@ from dataclasses import dataclass
 from os import PathLike
 from typing import Optional
 
-from src.utils.cfg.type_parser import type_parser
-from src.utils.misc.single import SingletonMeta
+from aib.cfg.type_parser import type_parser
+from aib.misc.single import SingletonMeta
 
 
 @dataclass

@@ -25,11 +25,11 @@ import pandas as pd
 import pyarrow.compute as pc
 import pyarrow.dataset as ds
 
-from src.utils.cnt.b_data import BaseData
-from src.utils.cnt.b_dict import BaseDict
-from src.utils.cv.geom.box.bbox2d import FloatBBox2DList
-from src.utils.cv.img.frame import Frame2D
-from src.utils.sys.b_obj import BaseObject
+from aib.cnt.b_data import BaseData
+from aib.cnt.b_dict import BaseDict
+from aib.cv.geom.box.bbox2d import FloatBBox2DList
+from aib.cv.img.frame import Frame2D
+from aib.sys.b_obj import BaseObject
 
 
 @dataclass(frozen=True)
@@ -320,7 +320,7 @@ class DetectionDatasetLoader(BaseObject):
                 a_in_memory=self._in_memory,
                 a_box_cols=self._box_cols,
                 a_frame_cols=self._frame_cols,
-                a_name=rel_path
+                a_name=rel_path,
             )
             self._loaders[rel_path] = loader
 

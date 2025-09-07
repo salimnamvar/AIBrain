@@ -44,8 +44,8 @@ from typing import (
 import numpy as np
 import numpy.typing as npt
 
-from src.utils.cnt.b_list import BaseList
-from src.utils.cv.geom.b_geom import BaseGeom
+from aib.cnt.b_list import BaseList
+from aib.cv.geom.b_geom import BaseGeom
 
 if TYPE_CHECKING:
     AnyPoint2D: TypeAlias = Union["Point2D[int]", "Point2D[float]"]

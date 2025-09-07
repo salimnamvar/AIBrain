@@ -21,11 +21,11 @@ import cv2
 import numpy as np
 import numpy.typing as npt
 
-from src.utils.cnt.io import BaseIO
-from src.utils.cv.geom.size import IntSize, Size
-from src.utils.cv.img.frame import Frame2D
-from src.utils.misc.common_types import StopEvent
-from src.utils.sys.b_mdl import BaseModel
+from aib.cnt.io import BaseIO
+from aib.cv.geom.size import IntSize, Size
+from aib.cv.img.frame import Frame2D
+from aib.misc.common_types import StopEvent
+from aib.sys.b_mdl import BaseModel
 
 IOT = TypeVar("IOT", bound=BaseIO, default=BaseIO[Frame2D | None, Any])
 

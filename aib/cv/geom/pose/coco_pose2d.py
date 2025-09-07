@@ -42,9 +42,9 @@ from dataclasses import dataclass
 from enum import Enum, IntEnum
 from typing import TYPE_CHECKING, Iterable, Optional, TypeAlias, TypeVar, Union, cast
 
-from src.utils.cv.geom.line2d import FloatLineKeyPoint2D, FloatLineKeyPoint2DList
-from src.utils.cv.geom.point.kpoint2d import AnyKeyPoint2D, FloatKeyPoint2D, IntKeyPoint2D
-from src.utils.cv.geom.pose.pose2d import Pose2D, Pose2DList
+from aib.cv.geom.line2d import FloatLineKeyPoint2D, FloatLineKeyPoint2DList
+from aib.cv.geom.point.kpoint2d import AnyKeyPoint2D, FloatKeyPoint2D, IntKeyPoint2D
+from aib.cv.geom.pose.pose2d import Pose2D, Pose2DList
 
 if TYPE_CHECKING:
     AnyCOCOPose2D: TypeAlias = Union["COCO17Pose2D[IntKeyPoint2D]", "COCO17Pose2D[FloatKeyPoint2D]"]

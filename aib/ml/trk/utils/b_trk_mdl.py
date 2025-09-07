@@ -12,14 +12,14 @@ import numpy as np
 import numpy.typing as npt
 import openvino as ov
 
-from src.utils.cnt.b_dict import BaseDict
-from src.utils.cnt.io import BaseIO
-from src.utils.cv.geom.box import AnyBox, AnyBoxList
-from src.utils.cv.geom.size import IntSize
-from src.utils.cv.img.frame import Frame2D
-from src.utils.cv.img.image import Image2D
-from src.utils.misc.common_types import StopEvent
-from src.utils.ml.utils.b_ml_mdl import BaseMLModel
+from aib.cnt.b_dict import BaseDict
+from aib.cnt.io import BaseIO
+from aib.cv.geom.box import AnyBox, AnyBoxList
+from aib.cv.geom.size import IntSize
+from aib.cv.img.frame import Frame2D
+from aib.cv.img.image import Image2D
+from aib.misc.common_types import StopEvent
+from aib.ml.utils.b_ml_mdl import BaseMLModel
 
 IOT = TypeVar("IOT", bound=BaseIO, default=BaseIO[Any, Any])
 

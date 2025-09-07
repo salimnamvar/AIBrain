@@ -20,9 +20,9 @@ Type Aliases:
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING, Iterable, Optional, TypeAlias, TypeVar, Union
 
-from src.utils.cnt.b_list import BaseList
-from src.utils.cv.geom.line2d import AnyLineKeyPoint2DList
-from src.utils.cv.geom.point.kpoint2d import AnyKeyPoint2D, FloatKeyPoint2D, IntKeyPoint2D, KeyPoint2DList
+from aib.cnt.b_list import BaseList
+from aib.cv.geom.line2d import AnyLineKeyPoint2DList
+from aib.cv.geom.point.kpoint2d import AnyKeyPoint2D, FloatKeyPoint2D, IntKeyPoint2D, KeyPoint2DList
 
 if TYPE_CHECKING:
     AnyPose2D: TypeAlias = Union["Pose2D[IntKeyPoint2D]", "Pose2D[FloatKeyPoint2D]"]

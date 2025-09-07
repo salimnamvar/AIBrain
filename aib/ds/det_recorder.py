@@ -19,12 +19,12 @@ import pandas as pd
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-from src.utils.cnt.b_dict import BaseDict
-from src.utils.cnt.io import BaseIO
-from src.utils.cv.geom.box.bbox2d import AnyBBox2D, AnyBBox2DList, FloatBBox2D, FloatBBox2DList
-from src.utils.cv.img.frame import Frame2D
-from src.utils.misc.common_types import StopEvent
-from src.utils.sys.b_mdl import BaseModel
+from aib.cnt.b_dict import BaseDict
+from aib.cnt.io import BaseIO
+from aib.cv.geom.box.bbox2d import AnyBBox2D, AnyBBox2DList, FloatBBox2D, FloatBBox2DList
+from aib.cv.img.frame import Frame2D
+from aib.misc.common_types import StopEvent
+from aib.sys.b_mdl import BaseModel
 
 IOT = TypeVar("IOT", bound=BaseIO, default=BaseIO[Any, None | Tuple[Frame2D, AnyBBox2DList | BaseDict[int, AnyBBox2D]]])
 

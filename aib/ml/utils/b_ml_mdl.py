@@ -22,10 +22,10 @@ import openvino as ov
 import ultralytics as ul
 from tensorflow_serving.apis.prediction_service_pb2_grpc import PredictionServiceStub
 
-from src.utils.cnt.io import BaseIO
-from src.utils.cv.geom.size import IntSize
-from src.utils.misc.common_types import StopEvent
-from src.utils.sys.b_mdl import BaseModel
+from aib.cnt.io import BaseIO
+from aib.cv.geom.size import IntSize
+from aib.misc.common_types import StopEvent
+from aib.sys.b_mdl import BaseModel
 
 IOT = TypeVar("IOT", bound=BaseIO, default=BaseIO[Any, Any])
 

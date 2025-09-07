@@ -30,7 +30,7 @@ from typing import (
 import numpy as np
 import numpy.typing as npt
 
-from src.utils.misc.type_check import is_bool, is_int
+from aib.misc.type_check import is_bool, is_int
 
 _T = TypeVar("_T")
 

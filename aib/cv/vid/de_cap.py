@@ -16,9 +16,9 @@ import numpy as np
 from decord import VideoReader, cpu
 from decord._ffi.ndarray import DECORDContext
 
-from src.utils.cv.geom.size import Size
-from src.utils.cv.img.frame import Frame2D
-from src.utils.sys.b_obj import BaseObject
+from aib.cv.geom.size import Size
+from aib.cv.img.frame import Frame2D
+from aib.sys.b_obj import BaseObject
 
 
 class DecordVideoReader(BaseObject):

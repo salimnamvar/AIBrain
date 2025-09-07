@@ -23,7 +23,7 @@ from typing import TYPE_CHECKING, Iterable, Optional, TypeAlias, TypeVar, Union
 
 from scipy.spatial import KDTree
 
-from src.utils.cv.geom.point.point2d import AnyPoint2D, FloatPoint2D, IntPoint2D, Point2DList, Point2DNestedList
+from aib.cv.geom.point.point2d import AnyPoint2D, FloatPoint2D, IntPoint2D, Point2DList, Point2DNestedList
 
 if TYPE_CHECKING:
     AnyContour2D: TypeAlias = Union["Contour2D[IntPoint2D]", "Contour2D[FloatPoint2D]"]

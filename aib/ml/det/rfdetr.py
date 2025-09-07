@@ -27,13 +27,13 @@ import torch
 from tensorflow import make_ndarray, make_tensor_proto
 from tensorflow_serving.apis import predict_pb2, prediction_service_pb2_grpc
 
-from src.utils.cnt.io import QueueIO
-from src.utils.cv.geom.box.bbox2d import IntBBox2DList, IntBBox2DNestedList
-from src.utils.cv.geom.size import IntSize
-from src.utils.cv.img.frame import Frame2D
-from src.utils.cv.img.image import Image2D
-from src.utils.misc.common_types import StopEvent
-from src.utils.ml.det.utils.b_det_mdl import BaseDetModel
+from aib.cnt.io import QueueIO
+from aib.cv.geom.box.bbox2d import IntBBox2DList, IntBBox2DNestedList
+from aib.cv.geom.size import IntSize
+from aib.cv.img.frame import Frame2D
+from aib.cv.img.image import Image2D
+from aib.misc.common_types import StopEvent
+from aib.ml.det.utils.b_det_mdl import BaseDetModel
 
 IOT = TypeVar(
     "IOT",

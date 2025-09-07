@@ -8,7 +8,7 @@ Classes:
 
 from dataclasses import dataclass
 
-from src.utils.cnt.b_data import BaseData
+from aib.cnt.b_data import BaseData
 
 
 @dataclass(frozen=True)

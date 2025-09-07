@@ -12,8 +12,8 @@ import time
 from abc import ABC
 from typing import Any, Optional
 
-from src.utils.cfg import Configuration
-from src.utils.perf.profile import Profiler
+from aib.cfg import Configuration
+from aib.perf.profile import Profiler
 
 
 class BaseObject(ABC):

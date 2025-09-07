@@ -26,9 +26,9 @@ from functools import wraps
 from pathlib import Path
 from typing import Any, Callable, Dict, Iterable, List, Literal, Optional, Union
 
-from src.utils.cnt.b_dict import BaseDict
-from src.utils.cnt.b_list import BaseList
-from src.utils.misc.single import SingletonMeta
+from aib.cnt.b_dict import BaseDict
+from aib.cnt.b_list import BaseList
+from aib.misc.single import SingletonMeta
 
 
 @dataclass
@@ -268,7 +268,7 @@ class Profiler(metaclass=SingletonMeta):
         """
         profiler = cls()
         report: Union[Dict[str, Any], List[Dict[str, Any]]] = {}
-        
+
         csv_path = Path(a_csv_path)
         csv_path.parent.mkdir(parents=True, exist_ok=True)
 

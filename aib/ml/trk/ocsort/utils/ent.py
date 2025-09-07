@@ -14,8 +14,8 @@ Type Variables:
 
 from typing import Dict, TypeVar
 
-from src.utils.cnt.b_dict import BaseDict
-from src.utils.cv.geom.box import AnyBox, FloatBox
+from aib.cnt.b_dict import BaseDict
+from aib.cv.geom.box import AnyBox, FloatBox
 
 BoxT = TypeVar("BoxT", bound=AnyBox, default=FloatBox)
 

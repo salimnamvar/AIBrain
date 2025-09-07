@@ -80,11 +80,11 @@ import cv2
 import numpy as np
 import numpy.typing as npt
 
-from src.utils.cv.geom.box.bbox2d import BBox2D, BBox2DList, BBox2DNestedList
-from src.utils.cv.geom.box.utils.coord_formats import cxyar_to_xyxy, cxywh_to_xyxy, xywh_to_xyxy
-from src.utils.cv.geom.point.point2d import AnyPoint2D, FloatPoint2D, IntPoint2D, Point2D
-from src.utils.cv.geom.size import Size
-from src.utils.cv.img.image import Image2D
+from aib.cv.geom.box.bbox2d import BBox2D, BBox2DList, BBox2DNestedList
+from aib.cv.geom.box.utils.coord_formats import cxyar_to_xyxy, cxywh_to_xyxy, xywh_to_xyxy
+from aib.cv.geom.point.point2d import AnyPoint2D, FloatPoint2D, IntPoint2D, Point2D
+from aib.cv.geom.size import Size
+from aib.cv.img.image import Image2D
 
 if TYPE_CHECKING:
     AnySegBBox2D: TypeAlias = Union["SegBBox2D[IntPoint2D]", "SegBBox2D[FloatPoint2D]"]

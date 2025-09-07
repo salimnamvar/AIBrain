@@ -22,7 +22,7 @@ from typing import TYPE_CHECKING, Any, Generic, Literal, Optional, TypeAlias, Ty
 import numpy as np
 import numpy.typing as npt
 
-from src.utils.cv.geom.b_geom import BaseGeom
+from aib.cv.geom.b_geom import BaseGeom
 
 _T = TypeVar("_T", bound=Union[int, float], default=float)
 

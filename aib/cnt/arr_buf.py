@@ -28,8 +28,8 @@ from typing import Any, List, Optional, Tuple, cast
 import numpy as np
 import numpy.typing as npt
 
-from src.utils.cnt.b_seq_data import BaseSeqData
-from src.utils.sys.b_obj import BaseObject
+from aib.cnt.b_seq_data import BaseSeqData
+from aib.sys.b_obj import BaseObject
 
 
 @dataclass(frozen=True)

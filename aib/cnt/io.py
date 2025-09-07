@@ -20,7 +20,7 @@ from abc import ABC, abstractmethod
 from queue import Queue as StdQueue
 from typing import Any, Generic, Literal, Optional, TypeVar
 
-from src.utils.sys.b_obj import BaseObject
+from aib.sys.b_obj import BaseObject
 
 IT = TypeVar("IT", bound=Any, default=Any)
 OT = TypeVar("OT", bound=Any, default=Any)

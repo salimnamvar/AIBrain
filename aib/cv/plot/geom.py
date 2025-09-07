@@ -22,16 +22,16 @@ import cv2
 import numpy as np
 import numpy.typing as npt
 
-from src.utils.cv.geom.box.bbox2d import BBox2D
-from src.utils.cv.geom.box.box2d import Box2D
-from src.utils.cv.geom.box.sbbox2d import SegBBox2D
-from src.utils.cv.geom.contour2d import Contour2D
-from src.utils.cv.geom.line2d import Line2D
-from src.utils.cv.geom.point.kpoint2d import KeyPoint2D
-from src.utils.cv.geom.point.point2d import Point2D
-from src.utils.cv.geom.pose.pose2d import Pose2D
-from src.utils.cv.img.frame import Frame2D
-from src.utils.cv.img.image import Image2D
+from aib.cv.geom.box.bbox2d import BBox2D
+from aib.cv.geom.box.box2d import Box2D
+from aib.cv.geom.box.sbbox2d import SegBBox2D
+from aib.cv.geom.contour2d import Contour2D
+from aib.cv.geom.line2d import Line2D
+from aib.cv.geom.point.kpoint2d import KeyPoint2D
+from aib.cv.geom.point.point2d import Point2D
+from aib.cv.geom.pose.pose2d import Pose2D
+from aib.cv.img.frame import Frame2D
+from aib.cv.img.image import Image2D
 
 T = TypeVar("T", bound=Union[int, float])
 PT = TypeVar("PT", bound=Union[Point2D[int], Point2D[float]])

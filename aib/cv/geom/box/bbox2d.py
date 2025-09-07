@@ -50,9 +50,9 @@ from typing import (
 import numpy as np
 import numpy.typing as npt
 
-from src.utils.cv.geom.box.box2d import Box2D, Box2DList, Box2DNestedList
-from src.utils.cv.geom.box.utils.coord_formats import cxyar_to_xyxy, cxywh_to_xyxy, xywh_to_xyxy
-from src.utils.cv.geom.point.point2d import AnyPoint2D, FloatPoint2D, IntPoint2D, Point2D
+from aib.cv.geom.box.box2d import Box2D, Box2DList, Box2DNestedList
+from aib.cv.geom.box.utils.coord_formats import cxyar_to_xyxy, cxywh_to_xyxy, xywh_to_xyxy
+from aib.cv.geom.point.point2d import AnyPoint2D, FloatPoint2D, IntPoint2D, Point2D
 
 if TYPE_CHECKING:
     AnyBBox2D: TypeAlias = Union["BBox2D[IntPoint2D]", "BBox2D[FloatPoint2D]"]

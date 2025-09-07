@@ -26,7 +26,7 @@ from typing import TYPE_CHECKING, Iterable, Literal, Optional, Sequence, TypeAli
 import numpy as np
 import numpy.typing as npt
 
-from src.utils.cv.geom.point.point2d import Point2D, Point2DList, Point2DNestedList
+from aib.cv.geom.point.point2d import Point2D, Point2DList, Point2DNestedList
 
 if TYPE_CHECKING:
     AnyKeyPoint2D: TypeAlias = Union["KeyPoint2D[int]", "KeyPoint2D[float]"]

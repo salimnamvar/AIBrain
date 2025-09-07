@@ -48,11 +48,11 @@ import numpy as np
 import numpy.typing as npt
 from pyparsing import Union
 
-from src.utils.cnt.b_list import BaseList
-from src.utils.cv.geom.b_geom import BaseGeom
-from src.utils.cv.geom.box.utils.coord_formats import cxyar_to_xyxy, cxywh_to_xyxy, xywh_to_xyxy
-from src.utils.cv.geom.point.point2d import AnyPoint2D, FloatPoint2D, IntPoint2D, Point2D
-from src.utils.cv.geom.size import AnySize, Size
+from aib.cnt.b_list import BaseList
+from aib.cv.geom.b_geom import BaseGeom
+from aib.cv.geom.box.utils.coord_formats import cxyar_to_xyxy, cxywh_to_xyxy, xywh_to_xyxy
+from aib.cv.geom.point.point2d import AnyPoint2D, FloatPoint2D, IntPoint2D, Point2D
+from aib.cv.geom.size import AnySize, Size
 
 if TYPE_CHECKING:
     AnyBox2D: TypeAlias = Union["Box2D[IntPoint2D]", "Box2D[FloatPoint2D]"]

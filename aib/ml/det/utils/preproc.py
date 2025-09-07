@@ -14,7 +14,7 @@ import cv2
 import numpy as np
 import numpy.typing as npt
 
-from src.utils.cv.geom.size import IntSize
+from aib.cv.geom.size import IntSize
 
 
 def letterbox(

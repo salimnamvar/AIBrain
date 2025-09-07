@@ -10,7 +10,7 @@ Classes:
 from abc import ABC
 from dataclasses import dataclass, field
 
-from src.utils.cnt.b_data import BaseData
+from aib.cnt.b_data import BaseData
 
 
 @dataclass(order=True, frozen=True, kw_only=True)

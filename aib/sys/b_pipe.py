@@ -17,9 +17,9 @@ Type Aliases:
 from abc import ABC
 from typing import Any, Literal, Optional, TypeVar
 
-from src.utils.cnt.io import BaseIO
-from src.utils.misc.common_types import StopEvent
-from src.utils.sys.b_mdl import BaseModel
+from aib.cnt.io import BaseIO
+from aib.misc.common_types import StopEvent
+from aib.sys.b_mdl import BaseModel
 
 IOT = TypeVar("IOT", bound=BaseIO, default=BaseIO[Any, Any])
 

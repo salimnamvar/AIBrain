@@ -18,9 +18,9 @@ from abc import ABC
 from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor
 from typing import Any, Generic, Literal, Optional, TypeVar
 
-from src.utils.cnt.io import BaseIO
-from src.utils.misc.common_types import StopEvent
-from src.utils.sys.b_obj import BaseObject
+from aib.cnt.io import BaseIO
+from aib.misc.common_types import StopEvent
+from aib.sys.b_obj import BaseObject
 
 IOT = TypeVar("IOT", bound=BaseIO, default=BaseIO[Any, Any])
 

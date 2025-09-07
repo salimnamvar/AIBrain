@@ -19,8 +19,8 @@ from typing import Dict, Optional, TypeVar
 import numpy as np
 import numpy.typing as npt
 
-from src.utils.cnt.b_dict import BaseDict
-from src.utils.cv.geom.box import AnyBox, FloatBox
+from aib.cnt.b_dict import BaseDict
+from aib.cv.geom.box import AnyBox, FloatBox
 
 BoxT = TypeVar("BoxT", bound=AnyBox, default=FloatBox)
 

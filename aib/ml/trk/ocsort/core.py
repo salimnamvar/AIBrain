@@ -23,11 +23,11 @@ from typing import Any, Callable, Generic, List, Literal, Optional, Tuple, TypeV
 import numpy as np
 import numpy.typing as npt
 
-from src.utils.cnt.io import QueueIO
-from src.utils.cv.geom.box import AnyBox, AnyBoxList, FloatBox
-from src.utils.cv.img.frame import Frame2D
-from src.utils.cv.img.image import Image2D
-from src.utils.ml.trk.ocsort.utils.assoc import (
+from aib.cnt.io import QueueIO
+from aib.cv.geom.box import AnyBox, AnyBoxList, FloatBox
+from aib.cv.img.frame import Frame2D
+from aib.cv.img.image import Image2D
+from aib.ml.trk.ocsort.utils.assoc import (
     associate,
     compute_ciou_matrix,
     compute_diou_matrix,
@@ -36,9 +36,9 @@ from src.utils.ml.trk.ocsort.utils.assoc import (
     compute_iou_matrix,
     solve_linear_assignment,
 )
-from src.utils.ml.trk.ocsort.utils.ent import EntityDict
-from src.utils.ml.trk.ocsort.utils.tgt import AnyTarget, FloatTarget, Target, TargetDict, TargetNestedDict
-from src.utils.ml.trk.utils.b_trk_mdl import BaseTrkModel
+from aib.ml.trk.ocsort.utils.ent import EntityDict
+from aib.ml.trk.ocsort.utils.tgt import AnyTarget, FloatTarget, Target, TargetDict, TargetNestedDict
+from aib.ml.trk.utils.b_trk_mdl import BaseTrkModel
 
 IOT = TypeVar(
     "IOT",

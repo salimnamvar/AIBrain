@@ -31,11 +31,11 @@ from typing import TYPE_CHECKING, Generic, Iterable, Optional, TypeAlias, TypeVa
 import numpy as np
 import numpy.typing as npt
 
-from src.utils.cnt.b_list import BaseList
-from src.utils.cv.geom.b_geom import BaseGeom
-from src.utils.cv.geom.point import AnyPoint, FloatPoint
-from src.utils.cv.geom.point.kpoint2d import FloatKeyPoint2D, IntKeyPoint2D
-from src.utils.cv.geom.point.point2d import FloatPoint2D, IntPoint2D
+from aib.cnt.b_list import BaseList
+from aib.cv.geom.b_geom import BaseGeom
+from aib.cv.geom.point import AnyPoint, FloatPoint
+from aib.cv.geom.point.kpoint2d import FloatKeyPoint2D, IntKeyPoint2D
+from aib.cv.geom.point.point2d import FloatPoint2D, IntPoint2D
 
 if TYPE_CHECKING:
     AnyLinePoint2D: TypeAlias = Union["Line2D[FloatPoint2D]", "Line2D[IntPoint2D]"]

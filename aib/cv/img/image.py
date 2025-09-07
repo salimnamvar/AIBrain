@@ -11,8 +11,8 @@ from typing import Any, Optional
 
 import numpy.typing as npt
 
-from src.utils.cnt.b_data import BaseData
-from src.utils.cv.geom.size import Size
+from aib.cnt.b_data import BaseData
+from aib.cv.geom.size import Size
 
 
 @dataclass(frozen=True)

@@ -11,8 +11,8 @@ from dataclasses import dataclass, field
 from os import PathLike
 from typing import Optional
 
-from src.utils.cnt.b_seq_data import BaseSeqData
-from src.utils.cv.img.image import Image2D
+from aib.cnt.b_seq_data import BaseSeqData
+from aib.cv.img.image import Image2D
 
 
 @dataclass(frozen=True, kw_only=True)
