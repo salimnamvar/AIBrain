@@ -128,6 +128,9 @@ class Profiler(metaclass=SingletonMeta):
         self._max_records_per_entity: Optional[int] = a_max_records_per_entity
         self._entities: Entities = Entities(a_max_size=a_max_entities)
 
+        if not tracemalloc.is_tracing():
+            tracemalloc.start()
+
     @property
     def name(self) -> str:
         """Get the name of the object.
@@ -185,7 +188,6 @@ class Profiler(metaclass=SingletonMeta):
         profiler = cls()
         a_name = Profiler.get_entity_name(a_name)
 
-        tracemalloc.start()
         mem_before = tracemalloc.get_traced_memory()[1]
 
         start_time = time.perf_counter()
@@ -226,7 +228,6 @@ class Profiler(metaclass=SingletonMeta):
             raise ValueError(f"PerfRecord Entity '{a_record.name}' not registered")
 
         mem_after = tracemalloc.get_traced_memory()[1]
-        tracemalloc.stop()
 
         a_record.end_time = time.perf_counter()
         a_record.cpu_end = time.process_time()
