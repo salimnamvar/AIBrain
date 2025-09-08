@@ -19,7 +19,7 @@ import cv2
 
 from aib.cnt.b_dict import BaseDict
 from aib.cnt.io import BaseIO
-from aib.cv.geom.size import IntSize, Size
+from aib.cv.geom.size import IntSize
 from aib.cv.img.frame import Frame2D
 from aib.cv.vid.cv_cap import OpenCVVideoCapture
 from aib.misc.common_types import StopEvent

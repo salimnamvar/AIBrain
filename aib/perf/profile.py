@@ -295,27 +295,27 @@ class Profiler(metaclass=SingletonMeta):
                     )
 
                 report[entity] = {
-                    "entity": entity,
-                    "call": total_calls,
-                    "call_success": success_count,
-                    "call_failure": failure_count,
-                    "runtime": cumulative_time,
-                    "latency_min": min(durations) if durations else 0,
-                    "latency_avg": sum(durations) / len(durations) if durations else 0,
-                    "latency_max": max(durations) if durations else 0,
-                    "latency_p50": percentile(durations, 50),
-                    "latency_p95": percentile(durations, 95),
-                    "latency_p99": percentile(durations, 99),
-                    "throughput": len(durations) / cumulative_time if cumulative_time > 0 else 0,
-                    "cpu_min": min(cpu_times) if cpu_times else 0,
-                    "cpu_avg": sum(cpu_times) / len(cpu_times) if cpu_times else 0,
-                    "cpu_max": max(cpu_times) if cpu_times else 0,
-                    "memory_min": min(memory_peaks) if memory_peaks else 0,
-                    "memory_avg": sum(memory_peaks) / len(memory_peaks) if memory_peaks else 0,
-                    "memory_max": max(memory_peaks) if memory_peaks else 0,
-                    "io_wait_min": min(io_waits) if io_waits else 0,
-                    "io_wait_avg": sum(io_waits) / len(io_waits) if io_waits else 0,
-                    "io_wait_max": max(io_waits) if io_waits else 0,
+                    "Entity": entity,
+                    "Call": total_calls,
+                    "Call Success": success_count,
+                    "Call Failure": failure_count,
+                    "Runtime": cumulative_time,
+                    "Latency Min": min(durations) if durations else 0,
+                    "Latency Avg": sum(durations) / len(durations) if durations else 0,
+                    "Latency Max": max(durations) if durations else 0,
+                    "Latency P50": percentile(durations, 50),
+                    "Latency P95": percentile(durations, 95),
+                    "Latency P99": percentile(durations, 99),
+                    "Throughput": len(durations) / cumulative_time if cumulative_time > 0 else 0,
+                    "CPU Min": min(cpu_times) if cpu_times else 0,
+                    "CPU Avg": sum(cpu_times) / len(cpu_times) if cpu_times else 0,
+                    "CPU Max": max(cpu_times) if cpu_times else 0,
+                    "Memory Min": min(memory_peaks) if memory_peaks else 0,
+                    "Memory Avg": sum(memory_peaks) / len(memory_peaks) if memory_peaks else 0,
+                    "Memory Max": max(memory_peaks) if memory_peaks else 0,
+                    "IO Wait Min": min(io_waits) if io_waits else 0,
+                    "IO Wait Avg": sum(io_waits) / len(io_waits) if io_waits else 0,
+                    "IO Wait Max": max(io_waits) if io_waits else 0,
                 }
 
             with open(csv_path, "w", newline="", encoding="utf-8") as f:
@@ -330,14 +330,14 @@ class Profiler(metaclass=SingletonMeta):
                 for r in records:
                     all_rows.append(
                         {
-                            "entity": entity,
-                            "start_time": r.start_time,
-                            "end_time": r.end_time,
-                            "latency": (r.end_time - r.start_time) if r.end_time else None,
-                            "cpu_time": (r.cpu_end - r.cpu_start) if r.cpu_end else None,
-                            "memory_usage": (r.memory_end - r.memory_start) if r.memory_end else None,
-                            "io_wait": r.io_wait,
-                            "success": r.success,
+                            "Entity": entity,
+                            "Start Time": r.start_time,
+                            "End Time": r.end_time,
+                            "Latency": (r.end_time - r.start_time) if r.end_time else None,
+                            "Cpu Time": (r.cpu_end - r.cpu_start) if r.cpu_end else None,
+                            "Memory Usage": (r.memory_end - r.memory_start) if r.memory_end else None,
+                            "IO Wait": r.io_wait,
+                            "Success": r.success,
                         }
                     )
 
