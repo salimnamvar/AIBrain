@@ -231,7 +231,7 @@ class Profiler(metaclass=SingletonMeta):
 
         a_record.end_time = time.perf_counter()
         a_record.cpu_end = time.process_time()
-        a_record.memory_end = max(0.0, mem_after / (1024 * 1024))
+        a_record.memory_end = mem_after / (1024 * 1024)
         a_record.success = a_success
 
         if a_record.cpu_end and a_record.cpu_start and a_record.end_time and a_record.start_time:
@@ -277,7 +277,7 @@ class Profiler(metaclass=SingletonMeta):
             for entity, records in profiler._entities.items():
                 durations = [r.end_time - r.start_time for r in records if r.end_time is not None]
                 cpu_times = [r.cpu_end - r.cpu_start for r in records if r.cpu_end is not None]
-                memory_peaks = [max(0.0, r.memory_end - r.memory_start) for r in records if r.memory_end is not None]
+                memory_peaks = [r.memory_end - r.memory_start for r in records if r.memory_end is not None]
                 successes = [r.success for r in records]
                 io_waits = [r.io_wait for r in records if r.io_wait is not None]
 
