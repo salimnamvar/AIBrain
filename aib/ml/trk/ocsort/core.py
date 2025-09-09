@@ -13,7 +13,8 @@ Classes:
         observation window, warmup, TTL, and BYTE association support.
 
 Type Variables:
-    IOT: TODO
+    IOT: A type variable representing the input-output type for the QueueIO, 
+         which handles the data flow between frames and entity dictionaries.
     BoxT: Type variable for bounding box types.
     TargetT: Type variable for target types.
 """
