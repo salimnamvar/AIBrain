@@ -21,23 +21,16 @@ AIBrain is a comprehensive Python framework designed for computer vision and mac
 
 ### Installation
 
-```bash
-pip install aib
-```
-
-Or install from source:
+install from source:
 
 ```bash
 git clone https://github.com/salimnamvar/AIBrain.git
 cd AIBrain
-pip install -e .
 ```
 
 ### Basic Usage
 
 ```python
-import aib
-
 # Object Detection with YOLO
 from aib.ml.det import YOLO
 from aib.cv.img import Image2D
