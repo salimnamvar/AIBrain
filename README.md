@@ -48,9 +48,8 @@ image = Image2D.from_file("image.jpg")
 detections = detector.infer(image)
 
 # Visualize results
-from aib.cv.plot import GeometryPlotter
-plotter = GeometryPlotter()
-result_image = plotter.draw_bboxes(image, detections)
+from aib.cv.plot import plot_geoms
+result_image = plot_geoms(image, detections)
 ```
 
 ## 📁 Project Structure
