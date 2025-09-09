@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aib"
+version = "2.0.0"
+description = "AIBrain core framework for computer vision projects"
+authors = [{name = "Salim Namvar", email = "salim.namvar@gmail.com"}]
+readme = "README.md"
+license = { text = "Apache-2.0" }
+requires-python = ">=3.13"
+dependencies = [
+    "decord",
+    "filterpy",
+    "grpcio",
+    "kagglehub",
+    "lap",
+    "numpy",
+    "opencv_python",
+    "openvino",
+    "pandas",
+    "pyarrow",
+    "pyparsing",
+    "scipy",
+    "tensorflow",
+    "tensorflow_hub",
+    "torch",
+    "torchvision",
+    "ultralytics",
+    "webunit"
+]
+
+[project.urls]
+"Homepage" = "https://github.com/salimnamvar/AIBrain"
+"Bug Tracker" = "https://github.com/salimnamvar/AIBrain/issues"
+
+[tool.black]
+line-length = 120
+skip-string-normalization = true
+target-version = ['py313']
+
+[tool.isort]
+profile = "google"
+line_length = 120
+
+[tool.docformatter]
+in-place = true
+wrap-summaries = 120
+wrap-descriptions = 120
