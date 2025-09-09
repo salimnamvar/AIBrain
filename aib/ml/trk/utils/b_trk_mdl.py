@@ -1,7 +1,14 @@
 """Machine Learning - Object Tracking - Base Abstract Multi-Object Tracking Models
 
+This module defines the `BaseTrkModel` class, which serves as an abstract base class
+for multi-object tracking models. It provides a foundation for implementing specific
+tracking models by defining common properties and methods.
+
 Classes:
-    BaseTrkModel: TODO
+    BaseTrkModel: Abstract base class for multi-object tracking models.
+
+Type Variables:
+    IOT: Type variable for input/output handling, defaulting to `BaseIO`.
 """
 
 from abc import ABC
@@ -25,6 +32,19 @@ IOT = TypeVar("IOT", bound=BaseIO, default=BaseIO[Any, Any])
 
 
 class BaseTrkModel(BaseMLModel[IOT], ABC):
+    """Abstract Base Class for Multi-Object Tracking Models.
+
+    This class provides a foundation for implementing multi-object tracking models.
+    It defines common properties and methods that subclasses can extend or override.
+
+    Attributes:
+        src_ids (Optional[Tuple[int, ...]]): Source IDs for the tracking model.
+        conf_thre (Optional[float]): Confidence threshold for detections.
+
+    Methods:
+        infer: Abstract method to perform inference. Must be implemented by subclasses.
+    """
+
     def __init__(
         self,
         a_src_ids: Optional[Tuple[int, ...]] = None,
@@ -56,6 +76,38 @@ class BaseTrkModel(BaseMLModel[IOT], ABC):
         a_use_log: bool = True,
         **kwargs: Any,
     ) -> None:
+        """Initializes the BaseTrkModel.
+
+        Args:
+            a_src_ids (Optional[Tuple[int, ...]]): Source IDs for the tracking model.
+            a_conf_thre (Optional[float]): Confidence threshold for detections.
+            a_model_uri (Optional[str | bytes | object | PathLike[str]]): URI of the model.
+            a_model_version (Optional[int]): Version of the model.
+            a_model_size (Optional[IntSize]): Size of the model.
+            a_model_config (Optional[Dict[str, Any]]): Configuration dictionary for the model.
+            a_model_in_layers (Optional[Tuple[str, ...]]): Input layer names for the model.
+            a_model_out_layers (Optional[Tuple[str, ...]]): Output layer names for the model.
+            a_backend_core (Optional[ov.Core | Any]): Backend core for inference.
+            a_data_size (Optional[IntSize]): Size of the input data.
+            a_infer_timeout (Optional[float]): Timeout for inference.
+            a_infer_trial (int): Number of inference trials.
+            a_device (Literal["CPU", "GPU", "MYRIAD", "FPGA", "HETERO", "AUTO"]): Device for inference.
+            a_precision (Literal["FP32", "FP16", "INT8"]): Precision for inference.
+            a_call_mode (Literal["sync", "async"]): Call mode for inference.
+            a_io_mode (Literal["args", "queue", "ipc"]): IO mode for inference.
+            a_proc_mode (Literal["batch", "online"]): Processing mode for inference.
+            a_backend (Literal["ovms", "openvino", "sys", "opencv"]): Backend for inference.
+            a_conc_mode (Optional[Literal["thread", "process"]]): Concurrency mode.
+            a_max_workers (Optional[int]): Maximum number of workers.
+            a_io (Optional[IOT]): IO object for the model.
+            a_stop_event (Optional[StopEvent]): Stop event for the model.
+            a_id (Optional[int]): ID of the model.
+            a_name (str): Name of the model.
+            a_use_prof (bool): Whether to use profiling.
+            a_use_cfg (bool): Whether to use configuration.
+            a_use_log (bool): Whether to use logging.
+            **kwargs: Additional keyword arguments.
+        """
         super().__init__(
             a_model_uri=a_model_uri,
             a_model_version=a_model_version,
@@ -89,10 +141,20 @@ class BaseTrkModel(BaseMLModel[IOT], ABC):
 
     @property
     def src_ids(self) -> Optional[Tuple[int, ...]]:
+        """Gets the source IDs for the tracking model.
+
+        Returns:
+            Optional[Tuple[int, ...]]: Source IDs.
+        """
         return self._src_ids
 
     @property
     def conf_thre(self) -> Optional[float]:
+        """Gets the confidence threshold for detections.
+
+        Returns:
+            Optional[float]: Confidence threshold.
+        """
         return self._conf_thre
 
     def infer(
@@ -105,4 +167,20 @@ class BaseTrkModel(BaseMLModel[IOT], ABC):
         a_step_id: Optional[int] = None,
         **kwargs: Any,
     ) -> BaseDict[int, AnyBox]:
+        """Performs inference on the input data.
+
+        Args:
+            a_image (Image2D | Frame2D | npt.NDArray[np.uint8]): Input image or frame.
+            a_boxes (Optional[AnyBoxList]): List of bounding boxes.
+            a_src_id (Optional[int]): Source ID.
+            a_step_timestamp (Optional[float]): Timestamp of the step.
+            a_step_id (Optional[int]): ID of the step.
+            **kwargs: Additional keyword arguments.
+
+        Returns:
+            BaseDict[int, AnyBox]: Dictionary of results.
+
+        Raises:
+            NotImplementedError: If the method is not implemented by a subclass.
+        """
         raise NotImplementedError("Subclasses must implement `infer` method.")
