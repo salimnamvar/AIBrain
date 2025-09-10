@@ -33,6 +33,8 @@ class Image2D(BaseData):
         channels (int): Number of channels in the image.
     """
 
+    __array_priority__ = 20.0
+
     data: npt.NDArray[Any] = field(compare=False)
     filename: Optional[str] = field(default=None, compare=False)
 
@@ -156,8 +158,6 @@ class Image2D(BaseData):
             return Image2D(cast(npt.NDArray[Any], result), filename=self.filename)
         return result
 
-    __array_priority__ = 20.0
-
     @property
     def __array_interface__(self):
         return self.data.__array_interface__
@@ -168,3 +168,9 @@ class Image2D(BaseData):
     def __setstate__(self, state: Dict[str, Any]) -> None:
         object.__setattr__(self, "data", state["data"])
         object.__setattr__(self, "filename", state["filename"])
+
+    def __getitem__(self, key: Any) -> "Image2D":
+        sub = self.data[key]
+        return Image2D(sub, filename=self.filename)
+    
+    
