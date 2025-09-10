@@ -7,8 +7,9 @@ Classes:
 """
 
 from dataclasses import dataclass, field
-from typing import Any, Optional
+from typing import Any, Callable, Dict, Optional, Sequence, Tuple, cast
 
+import numpy as np
 import numpy.typing as npt
 
 from aib.cnt.b_data import BaseData
@@ -82,7 +83,6 @@ class Image2D(BaseData):
             return 1
         return self.data.shape[2]
 
-    @property
     def to_numpy(self) -> npt.NDArray[Any]:
         """Convert the image data to a NumPy array.
 
@@ -90,3 +90,68 @@ class Image2D(BaseData):
             npt.NDArray[Any]: The image data as a NumPy array.
         """
         return self.data
+
+    def __array__(self, dtype: Optional[np.dtype[Any]] = None, copy: Optional[bool] = None):
+        if dtype is not None:
+            arr = self.to_numpy().astype(dtype, copy=copy if copy is not None else False)
+        else:
+            arr = self.to_numpy().copy() if copy else self.to_numpy()
+        return arr
+
+    def __array_wrap__(
+        self,
+        array: npt.NDArray[Any],
+        _context: Optional[Tuple[Any, tuple[Any, ...], int]] = None,
+        return_scalar: bool = False,
+    ) -> Any:
+        if return_scalar:
+            return array.item()
+
+        if array.ndim == 0:
+            return array.item()
+
+        return Image2D(data=array, filename=self.filename)
+
+    def __array_finalize__(self, obj: Optional[object]) -> None:
+        if obj is None:
+            return
+        object.__setattr__(self, "filename", getattr(obj, "filename", None))
+
+    def __array_ufunc__(self, ufunc: np.ufunc, method: str, *inputs: Any, **kwargs: Any) -> Any:
+        arrays = [np.asarray(x) if isinstance(x, Image2D) else x for x in inputs]
+
+        if "out" in kwargs:
+            out = kwargs["out"]
+            kwargs["out"] = tuple(np.asarray(x) if isinstance(x, Image2D) else x for x in out)
+
+        result: Any = getattr(ufunc, method)(*arrays, **kwargs)
+
+        if isinstance(result, np.ndarray):
+            return Image2D(cast(npt.NDArray[Any], result), filename=self.filename)
+        elif isinstance(result, tuple):
+            result_tuple: Tuple[Any, ...] = cast(Tuple[Any, ...], result)
+            wrapped: Tuple[Any, ...] = tuple(
+                Image2D(cast(npt.NDArray[Any], x), filename=self.filename) if isinstance(x, np.ndarray) else x
+                for x in result_tuple
+            )
+            return wrapped
+        else:
+            return result
+
+    def __array_function__(
+        self,
+        func: Callable[..., Any],
+        types: Sequence[type],
+        args: Tuple[Any, ...],
+        kwargs: Dict[str, Any],
+    ) -> Any:
+        if not all(issubclass(t, (np.ndarray, Image2D)) for t in types):
+            return NotImplemented
+
+        arrays = [np.asarray(a) if isinstance(a, Image2D) else a for a in args]
+
+        result = func(*arrays, **kwargs)
+
+        if isinstance(result, np.ndarray):
+            return Image2D(cast(npt.NDArray[Any], result), filename=self.filename)
+        return result
