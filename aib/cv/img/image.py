@@ -155,3 +155,16 @@ class Image2D(BaseData):
         if isinstance(result, np.ndarray):
             return Image2D(cast(npt.NDArray[Any], result), filename=self.filename)
         return result
+
+    __array_priority__ = 20.0
+
+    @property
+    def __array_interface__(self):
+        return self.data.__array_interface__
+
+    def __getstate__(self) -> Dict[str, Any]:
+        return {"data": self.data, "filename": self.filename}
+
+    def __setstate__(self, state: Dict[str, Any]) -> None:
+        object.__setattr__(self, "data", state["data"])
+        object.__setattr__(self, "filename", state["filename"])
