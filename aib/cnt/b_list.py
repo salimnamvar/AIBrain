@@ -11,6 +11,7 @@ Classes:
 import copy
 from collections import UserList
 from typing import (
+    Any,
     Callable,
     Generic,
     Iterable,
@@ -32,7 +33,7 @@ import numpy.typing as npt
 
 from aib.misc.type_check import is_bool, is_int
 
-_T = TypeVar("_T")
+_T = TypeVar("_T", bound=Any, default=Any)
 
 
 class BaseList(UserList[_T], Generic[_T]):

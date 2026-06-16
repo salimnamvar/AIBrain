@@ -47,10 +47,35 @@ Thumbs.db
 *.flv
 *.mov
 *.wmv
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.svg
+*.psd
+*.ico
+*.mp3
+*.wav
+*.flac
+*.aac
+*.ogg
+*.wma
+*.m4a
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+*.iso
+*.dmg
+*.pdf   
 
 # Static Files
 ./data
-
+data/
+./static
+static/
 
 # VSCode
 .vscode/
